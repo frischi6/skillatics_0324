@@ -1,0 +1,1 @@
+ C:\\Users\\user\\StudioProjects\\skillatics\\.dart_tool\\flutter_build\\e4640b9117c32ff068fe0e4e758849aa\\native_assets.yaml: 

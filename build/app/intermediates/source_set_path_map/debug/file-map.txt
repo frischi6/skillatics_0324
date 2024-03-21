@@ -1,0 +1,12 @@
+com.example.skillatics.app-jetified-window-java-1.0.0-beta04-0 C:\Users\sarah\.gradle\caches\transforms-3\18deafea6fd8bd15b4ac488481ce7189\transformed\jetified-window-java-1.0.0-beta04\res
+com.example.skillatics.app-core-1.6.0-1 C:\Users\sarah\.gradle\caches\transforms-3\87955219ada9e4e421baba4d189bfc74\transformed\core-1.6.0\res
+com.example.skillatics.app-jetified-window-1.0.0-beta04-2 C:\Users\sarah\.gradle\caches\transforms-3\cc5bad0ed8e76ce4cfc4c687e304cead\transformed\jetified-window-1.0.0-beta04\res
+com.example.skillatics.app-jetified-annotation-experimental-1.1.0-3 C:\Users\sarah\.gradle\caches\transforms-3\f57c9dcbaac671d409c90afd181b1c28\transformed\jetified-annotation-experimental-1.1.0\res
+com.example.skillatics.app-debug-4 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\android\app\src\debug\res
+com.example.skillatics.app-main-5 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\android\app\src\main\res
+com.example.skillatics.app-pngs-6 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\build\app\generated\res\pngs\debug
+com.example.skillatics.app-resValues-7 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\build\app\generated\res\resValues\debug
+com.example.skillatics.app-rs-8 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\build\app\generated\res\rs\debug
+com.example.skillatics.app-mergeDebugResources-9 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\build\app\intermediates\incremental\debug\mergeDebugResources\merged.dir
+com.example.skillatics.app-mergeDebugResources-10 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\build\app\intermediates\incremental\debug\mergeDebugResources\stripped.dir
+com.example.skillatics.app-merged_res-11 C:\Users\sarah\OneDrive\Desktop\braintool - Kopie\braintool_safr\build\app\intermediates\merged_res\debug
