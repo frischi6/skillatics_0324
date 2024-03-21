@@ -12,6 +12,7 @@ class RandomColorPage2 extends StatefulWidget {
       required this.listSelectedColors,
       required this.listSelectedArrows,
       required this.listSelectedNumbers,
+      required this.listSelectedShapes,
       required this.anzColorsOnPage,
       required this.secChangeColor,
       required this.secLengthRound,
@@ -23,6 +24,7 @@ class RandomColorPage2 extends StatefulWidget {
   var listSelectedColors;
   var listSelectedArrows;
   var listSelectedNumbers;
+  var listSelectedShapes;
   int anzColorsOnPage;
   int secChangeColor;
   int secLengthRound;
@@ -56,8 +58,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   var listWithSelectedArrows = [];
   var listWithSelectedNumbers = [];
+  var listWithSelectedShapes = [];
   var listWithSelectedIcons =
-      []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers
+      []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers + listWithSelectedShapes
   var listToFillContainersIcon = [
     const Icon(Icons.north),
     const Icon(Icons.north),
@@ -371,6 +374,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   void _initializeListSelectedArrows() {
     listWithSelectedArrows = widget.listSelectedArrows;
     _initializeListSelectedNumbers();
+    _initializeListSelectedShapes();
     _initializeListSelectedIcons();
   }
 
@@ -378,8 +382,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     listWithSelectedNumbers = widget.listSelectedNumbers;
   }
 
+  void _initializeListSelectedShapes() {
+    listWithSelectedShapes = widget.listSelectedShapes;
+  }
+
   void _initializeListSelectedIcons() {
-    listWithSelectedIcons = listWithSelectedArrows + listWithSelectedNumbers;
+    listWithSelectedIcons = listWithSelectedArrows +
+        listWithSelectedNumbers +
+        listWithSelectedShapes;
   }
 
   /// füllt listWithSelectedHex mit Hexcodes aus listWithSelectedColors ab
@@ -491,6 +501,15 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       } else if (arrowDirection == 'nine') {
         listToFillContainersIcon[index] =
             Icon(CustomIcons.nine, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'triangle') {
+        listToFillContainersIcon[index] = Icon(CustomIcons.triangle,
+            color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'circle') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.circle, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'square') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.square, color: Colors.black, size: sizeIcon - 10);
       }
     } else {
       //arrow should not be visible
@@ -755,6 +774,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   listSelectedColors: listWithSelectedColors,
                   listSelectedArrows: listWithSelectedArrows,
                   listSelectedNumbers: listWithSelectedNumbers,
+                  listSelectedShapes: listWithSelectedShapes,
                   anzColorsOnPage: anzColorsOnPage2,
                   secChangeColor: secChangeColor2,
                   secLengthRound: secLengthRound2,

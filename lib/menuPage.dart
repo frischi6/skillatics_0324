@@ -2,6 +2,7 @@ import 'dart:async'; //damit Timer gebraucht werden kann
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
+import 'package:skillatics/custom_icons_icons.dart';
 //import 'package:rate_my_app/rate_my_app.dart';
 import 'package:skillatics/trainingPage.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -46,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var selectedColors = [];
   var selectedArrows = [];
   var selectedNumbers = [];
+  var selectedShapes = [];
   var selectedItems = []; //total
 
 //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
@@ -117,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
               listSelectedColors: selectedItems,
               listSelectedArrows: selectedArrows,
               listSelectedNumbers: selectedNumbers,
+              listSelectedShapes: selectedShapes,
               anzColorsOnPage: anzColorsOnPage,
               secChangeColor: secChangeColor,
               secLengthRound: secLengthRound,
@@ -132,7 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Initializes selectedArrows[] and sets correct color for arrows in selectedcolors that there are only hex and no strings like 'north' etc
   void organizeArrowsColors() {
-    selectedItems = selectedColors + selectedNumbers + selectedArrows;
+    selectedItems =
+        selectedColors + selectedNumbers + selectedArrows + selectedShapes;
     for (int i = 0; i < selectedItems.length; i++) {
       if (selectedItems[i].length != 6) {
         //selectedArrows.add(selectedItems[i]);
@@ -937,6 +941,107 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  /// returnt ein MultiSelectContainer, in dem alle Formen ausgewählt werden können
+  MultiSelectContainer buildShapeselect() {
+    return MultiSelectContainer(
+      key: Key(
+          keyString), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
+      //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
+      prefix: MultiSelectPrefix(
+          selectedPrefix: const Padding(
+        padding: EdgeInsets.only(right: 5),
+        child: Icon(
+          Icons.check,
+          color: Colors.white,
+          size: 14,
+        ),
+      )),
+      items: [
+        MultiSelectCard(
+          value: 'triangle',
+          child: const Icon(CustomIcons.triangle),
+          textStyles: const MultiSelectItemTextStyles(
+              selectedTextStyle: TextStyle(color: Colors.black)),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all())),
+          prefix: MultiSelectPrefix(
+            selectedPrefix: const Padding(
+              padding: EdgeInsets.only(right: 5),
+              child: Icon(
+                Icons.check,
+                color: Colors.black,
+                size: 14,
+              ),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: 'square',
+          child: const Icon(CustomIcons.square),
+          textStyles: const MultiSelectItemTextStyles(
+              selectedTextStyle: TextStyle(color: Colors.black)),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all())),
+          prefix: MultiSelectPrefix(
+            selectedPrefix: const Padding(
+              padding: EdgeInsets.only(right: 5),
+              child: Icon(
+                Icons.check,
+                color: Colors.black,
+                size: 14,
+              ),
+            ),
+          ),
+        ),
+        MultiSelectCard(
+          value: 'circle',
+          child: const Icon(CustomIcons.circle),
+          textStyles: const MultiSelectItemTextStyles(
+              selectedTextStyle: TextStyle(color: Colors.black)),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all())),
+          prefix: MultiSelectPrefix(
+            selectedPrefix: const Padding(
+              padding: EdgeInsets.only(right: 5),
+              child: Icon(
+                Icons.check,
+                color: Colors.black,
+                size: 14,
+              ),
+            ),
+          ),
+        ),
+      ],
+      onChange: (allSelectedItems, selectedItem) {
+        selectedShapes = allSelectedItems;
+      },
+    );
+  }
+
   @override
   void initState() {
     currentCountry = widget.currentCountry;
@@ -1033,6 +1138,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ConstrainedBox(
                 constraints: BoxConstraints(),
                 child: buildNumberselect(),
+              ),
+              SizedBox(height: 15),
+              Text(
+                'formen'.tr,
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+              SizedBox(height: 10),
+              ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: buildShapeselect(),
               ),
               SizedBox(height: 15),
               Divider(
