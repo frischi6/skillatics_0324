@@ -1,4 +1,4 @@
-#Thu Mar 21 20:13:42 CET 2024
+#Sun Mar 24 17:01:53 CET 2024
 base.0=C\:\\Users\\sarah\\OneDrive\\Desktop\\braintool - Kopie\\braintool_safr\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

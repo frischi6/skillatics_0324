@@ -67,10 +67,16 @@ flutter:
     - family: CustomIcons
       fonts:
         - asset: fonts/CustomIcons.ttf
+        
     - family: SkillaticsIcon
       fonts:
         - asset: fonts/SkillaticsIcon.ttf
 
+    - family: AlphabetLettersIcons
+      fonts:
+        - asset: fonts/AlphabetLetters.ttf
+
+        
 flutter_native_splash:
   image: "assets/splash_light.png"
   color: "#bcfa00"

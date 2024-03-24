@@ -13,6 +13,7 @@ class RandomColorPage2 extends StatefulWidget {
       required this.listSelectedArrows,
       required this.listSelectedNumbers,
       required this.listSelectedShapes,
+      required this.listSelectedAlphabetletters,
       required this.anzColorsOnPage,
       required this.secChangeColor,
       required this.secLengthRound,
@@ -25,6 +26,7 @@ class RandomColorPage2 extends StatefulWidget {
   var listSelectedArrows;
   var listSelectedNumbers;
   var listSelectedShapes;
+  var listSelectedAlphabetletters;
   int anzColorsOnPage;
   int secChangeColor;
   int secLengthRound;
@@ -59,8 +61,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var listWithSelectedArrows = [];
   var listWithSelectedNumbers = [];
   var listWithSelectedShapes = [];
+  var listWithSelectedAlphabetletters = [];
   var listWithSelectedIcons =
-      []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers + listWithSelectedShapes
+      []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers + listWithSelectedShapes + listWithSelectedAlphabetletters
   var listToFillContainersIcon = [
     const Icon(Icons.north),
     const Icon(Icons.north),
@@ -375,6 +378,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     listWithSelectedArrows = widget.listSelectedArrows;
     _initializeListSelectedNumbers();
     _initializeListSelectedShapes();
+    _initializeListSelectedAlphabetletters();
     _initializeListSelectedIcons();
   }
 
@@ -386,10 +390,15 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     listWithSelectedShapes = widget.listSelectedShapes;
   }
 
+  void _initializeListSelectedAlphabetletters() {
+    listWithSelectedAlphabetletters = widget.listSelectedAlphabetletters;
+  }
+
   void _initializeListSelectedIcons() {
     listWithSelectedIcons = listWithSelectedArrows +
         listWithSelectedNumbers +
-        listWithSelectedShapes;
+        listWithSelectedShapes +
+        listWithSelectedAlphabetletters;
   }
 
   /// füllt listWithSelectedHex mit Hexcodes aus listWithSelectedColors ab
@@ -450,6 +459,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       } else if (anzColorsOnPage2 == 1) {
         sizeIcon = 200.0;
       }
+
       if (arrowDirection == 'north') {
         listToFillContainersIcon[index] =
             Icon(Icons.north, color: Colors.black, size: sizeIcon);
@@ -503,13 +513,91 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             Icon(CustomIcons.nine, color: Colors.black, size: sizeIcon - 10);
       } else if (arrowDirection == 'triangle') {
         listToFillContainersIcon[index] = Icon(CustomIcons.triangle,
-            color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'circle') {
+            color: Colors.black, size: sizeIcon + 40);
+      } else if (arrowDirection == 'kreis') {
         listToFillContainersIcon[index] =
-            Icon(CustomIcons.circle, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'square') {
+            Icon(CustomIcons.circle, color: Colors.black, size: sizeIcon + 40);
+      } else if (arrowDirection == 'quadrat') {
         listToFillContainersIcon[index] =
-            Icon(CustomIcons.square, color: Colors.black, size: sizeIcon - 10);
+            Icon(CustomIcons.square, color: Colors.black, size: sizeIcon + 40);
+      } else if (arrowDirection == 'letterA') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.a, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterB') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.b, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterC') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.c, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterD') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.d, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterE') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.e, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterF') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.f, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterG') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.g, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterH') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.h, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterI') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.i, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterJ') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.j, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterK') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.k, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterL') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.l, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterM') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.m, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterN') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.n, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterO') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.o, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterP') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.p, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterQ') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.q, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterR') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.r, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterS') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.s, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterT') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.t, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterU') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.u, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterV') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.v, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterW') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.w, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterX') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.x, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterY') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.y, color: Colors.black, size: sizeIcon - 10);
+      } else if (arrowDirection == 'letterZ') {
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.z, color: Colors.black, size: sizeIcon - 10);
       }
     } else {
       //arrow should not be visible
@@ -775,6 +863,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   listSelectedArrows: listWithSelectedArrows,
                   listSelectedNumbers: listWithSelectedNumbers,
                   listSelectedShapes: listWithSelectedShapes,
+                  listSelectedAlphabetletters: listWithSelectedAlphabetletters,
                   anzColorsOnPage: anzColorsOnPage2,
                   secChangeColor: secChangeColor2,
                   secLengthRound: secLengthRound2,
