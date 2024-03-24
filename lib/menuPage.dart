@@ -52,7 +52,12 @@ class _MyHomePageState extends State<MyHomePage> {
   var selectedShapes = [];
   var selectedAlphabetletters = [];
 
-  var selectedItems = []; //total
+  //beinhaltet hex-werte von allen selected items: hex-wert der gewählten farbe oder bei zahlen/formen/etc immer hex-wert fefefe-> so wird in trainingpage erkannt dass ein icon angezeigt werden muss
+  var selectedItems = [];
+
+  //Controller für Multiselect Alphabetletter damit alle items aufs mal (ab-)gewählt werden können
+  final MultiSelectController<dynamic> _controllerAlphabetLetter =
+      MultiSelectController(deSelectPerpetualSelectedItems: true);
 
 //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
   /* final RateMyApp rateMyApp = RateMyApp(
@@ -178,9 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Column(
             children: [
-              Text(''),
-              Text('Skillatics Neuroathletik'),
-              Text(''),
+              Text('\nSkillatics Neuroathletik\n'),
               Text('+41 79 663 48 52'),
               Text('info@skillatics.ch'),
               Text('www.skillatics.ch'),
@@ -209,7 +212,8 @@ class _MyHomePageState extends State<MyHomePage> {
       )),
       items: [
         MultiSelectCard(
-          value: 'f5ff00',
+          value:
+              'f5ff00', //HEX-Code der Farbe, muss zwingend 6-stellig sein (siehe organizeArrowsColors)
           label: 'Gelb'.tr,
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
@@ -406,222 +410,58 @@ class _MyHomePageState extends State<MyHomePage> {
           keyString), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
       prefix: MultiSelectPrefix(
-          selectedPrefix: const Padding(
-        padding: EdgeInsets.only(right: 5),
-        child: Icon(
-          Icons.check,
-          color: Colors.white,
-          size: 14,
+        selectedPrefix: const Padding(
+          padding: EdgeInsets.only(right: 5),
+          child: Icon(
+            Icons.check,
+            color: Colors.black,
+            size: 14,
+          ),
         ),
-      )),
+      ),
+      itemsDecoration: MultiSelectDecorations(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(),
+          ),
+          selectedDecoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all())),
+
       items: [
         MultiSelectCard(
           value: 'north',
           child: const Icon(Icons.north),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
         MultiSelectCard(
           value: 'east',
           child: const Icon(Icons.east),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
         MultiSelectCard(
           value: 'south',
           child: const Icon(Icons.south),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
         MultiSelectCard(
           value: 'west',
           child: const Icon(Icons.west),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
         MultiSelectCard(
           value: 'northwest',
           child: const Icon(Icons.north_west),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
         MultiSelectCard(
           value: 'northeast',
           child: const Icon(Icons.north_east),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
         MultiSelectCard(
           value: 'southeast',
           child: const Icon(Icons.south_east),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
         MultiSelectCard(
           value: 'southwest',
           child: const Icon(Icons.south_west),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
         ),
       ],
       onChange: (allSelectedItems, selectedItem) {
@@ -634,7 +474,7 @@ class _MyHomePageState extends State<MyHomePage> {
   MultiSelectContainer buildNumberselect() {
     var numbersWrittenOut = [];
     numbersWrittenOut = [
-      'zero', //zero wird nicht gebraucht aber so geht es auf in for-loop weil i = 1
+      'zero', //zero wird nicht gebraucht aber so geht es auf in for-loop weil startet mit i = 1
       'one',
       'two',
       'three',
@@ -654,44 +494,30 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.only(right: 5),
         child: Icon(
           Icons.check,
-          color: Colors.white,
+          color: Colors.black,
           size: 14,
         ),
       )),
+      textStyles: const MultiSelectTextStyles(
+          textStyle: TextStyle(
+              fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+          selectedTextStyle: TextStyle(
+              fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black)),
+      itemsDecoration: MultiSelectDecorations(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(),
+          ),
+          selectedDecoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all())),
       items: [
         for (int i = 1; i <= 9; i++)
           MultiSelectCard(
             value: numbersWrittenOut[i],
             label: i.toString(),
-            textStyles: const MultiSelectItemTextStyles(
-                textStyle: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-                selectedTextStyle: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-            decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(),
-                ),
-                selectedDecoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all())),
-            prefix: MultiSelectPrefix(
-              selectedPrefix: const Padding(
-                padding: EdgeInsets.only(right: 5),
-                child: Icon(
-                  Icons.check,
-                  color: Colors.black,
-                  size: 14,
-                ),
-              ),
-            ),
           ),
       ],
       onChange: (allSelectedItems, selectedItem) {
@@ -715,86 +541,31 @@ class _MyHomePageState extends State<MyHomePage> {
           size: 14,
         ),
       )),
+      itemsDecoration: MultiSelectDecorations(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(),
+          ),
+          selectedDecoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all())),
+      itemsPadding: EdgeInsets.fromLTRB(0, 0, 4, 0),
       items: [
         MultiSelectCard(
           value: 'triangle',
-          child: const Icon(CustomIcons.triangle),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
+          child: const Icon(CustomIcons.triangle_empty),
         ),
         MultiSelectCard(
           value:
               'quadrat', //muss deutsch sein weil square 6 buchstaben lang ist und länge 6 ist für color reserviert (hex-werte haben länge 6)-> entscheidend für organizeArrowsColors
-          child: const Icon(CustomIcons.square),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
+          child: const Icon(CustomIcons.square_empty),
         ),
         MultiSelectCard(
           value:
               'kreis', //muss deutsch sein weil circle 6 buchstaben lang ist und länge 6 ist für color reserviert (hex-werte haben länge 6)-> entscheidend für organizeArrowsColors
-          child: const Icon(CustomIcons.circle),
-          textStyles: const MultiSelectItemTextStyles(
-              selectedTextStyle: TextStyle(color: Colors.black)),
-          decorations: MultiSelectItemDecorations(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(),
-              ),
-              selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all())),
-          prefix: MultiSelectPrefix(
-            selectedPrefix: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 14,
-              ),
-            ),
-          ),
+          child: const Icon(CustomIcons.circle_empty),
         ),
       ],
       onChange: (allSelectedItems, selectedItem) {
@@ -805,12 +576,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// returnt ein MultiSelectContainer, in dem alle Nummern ausgewählt werden können
   MultiSelectContainer buildAlphabetselect() {
-    var alphabetlist = [];
+    var alphabetlist = []; //Liste mit allen Grossbuchstaben A-Z
     alphabetlist = List.generate(
         26,
         (index) => (String.fromCharCode(
             index + 65))); //generates list with whole alphabet A-Z
+
     return MultiSelectContainer(
+      controller: _controllerAlphabetLetter,
       key: Key(
           keyString), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
@@ -819,44 +592,30 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.only(right: 5),
         child: Icon(
           Icons.check,
-          color: Colors.white,
+          color: Colors.black,
           size: 14,
         ),
       )),
+      textStyles: const MultiSelectTextStyles(
+          textStyle: TextStyle(
+              fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+          selectedTextStyle: TextStyle(
+              fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black)),
+      itemsDecoration: MultiSelectDecorations(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(),
+          ),
+          selectedDecoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all())),
       items: [
         for (int i = 0; i < alphabetlist.length; i++)
           MultiSelectCard(
             value: 'letter' + alphabetlist[i],
             label: alphabetlist[i],
-            textStyles: const MultiSelectItemTextStyles(
-                textStyle: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-                selectedTextStyle: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-            decorations: MultiSelectItemDecorations(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(),
-                ),
-                selectedDecoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all())),
-            prefix: MultiSelectPrefix(
-              selectedPrefix: const Padding(
-                padding: EdgeInsets.only(right: 5),
-                child: Icon(
-                  Icons.check,
-                  color: Colors.black,
-                  size: 14,
-                ),
-              ),
-            ),
           ),
       ],
       onChange: (allSelectedItems, selectedItem) {
@@ -947,6 +706,47 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 'buchstaben'.tr,
                 style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    child: Text(
+                      'selectAll'.tr,
+                    ),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: BorderSide(color: Colors.grey.shade700)),
+                    autofocus: false,
+                    onPressed: () {
+                      selectedAlphabetletters =
+                          _controllerAlphabetLetter.selectAll();
+                    },
+                    onLongPress: () {
+                      selectedAlphabetletters =
+                          _controllerAlphabetLetter.selectAll();
+                    },
+                  ),
+                  SizedBox(width: 5),
+                  TextButton(
+                    child: Text(
+                      'deselectAll'.tr,
+                    ),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: BorderSide(color: Colors.grey.shade700)),
+                    autofocus: false,
+                    onPressed: () {
+                      _controllerAlphabetLetter.deselectAll();
+                      selectedAlphabetletters.clear();
+                    },
+                    onLongPress: () {
+                      _controllerAlphabetLetter.deselectAll();
+                      selectedAlphabetletters.clear();
+                    },
+                  ),
+                ],
               ),
               SizedBox(height: 10),
               ConstrainedBox(

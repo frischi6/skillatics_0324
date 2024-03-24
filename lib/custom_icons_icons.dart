@@ -54,6 +54,15 @@ class CustomIcons {
   static const IconData square = IconData(0xf7ff,
       fontFamily: CupertinoIcons.iconFont,
       fontPackage: CupertinoIcons.iconFontPackage);
+  static const IconData triangle_empty = IconData(0xf87b,
+      fontFamily: CupertinoIcons.iconFont,
+      fontPackage: CupertinoIcons.iconFontPackage);
+  static const IconData circle_empty = IconData(0xf401,
+      fontFamily: CupertinoIcons.iconFont,
+      fontPackage: CupertinoIcons.iconFontPackage);
+  static const IconData square_empty = IconData(0xf7f8,
+      fontFamily: CupertinoIcons.iconFont,
+      fontPackage: CupertinoIcons.iconFontPackage);
 
   //Icons with letters A-Z
   static const _kFontFamLetters = 'AlphabetLettersIcons';

@@ -31,9 +31,22 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Skillatics',
       theme: ThemeData(
-        primarySwatch: colorCustom,
-        //unselectedWidgetColor: Colors.black, //noch nötig?
-      ),
+          primarySwatch: colorCustom,
+          colorScheme: ColorScheme(
+            brightness: Brightness.light,
+            primary: colorCustom,
+            onPrimary: Colors.black,
+            secondary: Colors.black,
+            onSecondary: Colors.black,
+            background: Colors.white,
+            onBackground: Colors.black,
+            surface: colorCustom,
+            onSurface: Colors.black,
+            error: Colors.red,
+            onError: Colors.black,
+          )
+          //unselectedWidgetColor: Colors.black, //noch nötig?
+          ),
       home: MyHomePage(
         title: 'Skillatics',
         currentCountry: "GB", //aktuelle Flagge die oben rechts erscheint
