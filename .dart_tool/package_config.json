@@ -32,18 +32,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "checked_yaml",
-      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/checked_yaml-2.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.19"
-    },
-    {
-      "name": "cli_util",
-      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/cli_util-0.3.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "clock",
       "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/clock-1.1.1",
       "packageUri": "lib/",
@@ -84,12 +72,6 @@
       "rootUri": "file:///C:/Users/sarah/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.2"
-    },
-    {
-      "name": "flutter_launcher_icons",
-      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_icons-0.10.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "flutter_lints",
@@ -144,12 +126,6 @@
       "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.7.0",
       "packageUri": "lib/",
       "languageVersion": "3.1"
-    },
-    {
-      "name": "json_annotation",
-      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.8.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.19"
     },
     {
       "name": "leak_tracker",
@@ -302,7 +278,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-03-23T11:30:54.861676Z",
+  "generated": "2024-04-07T16:01:15.474742Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

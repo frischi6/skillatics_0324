@@ -1,5 +1,5 @@
 name: skillatics
-description: "A new Flutter project."
+description: Trainiere dein Hirn mit Farben
 publish_to: 'none'
 
 # The following defines the version and build number for your application.
@@ -32,7 +32,6 @@ dependencies:
   numberpicker: ^2.1.1
   flutter_multi_select_items: ^0.4.0
   get:
-  flutter_launcher_icons: ^0.10.0
   flutter_native_splash: ^1.2.3
   font_awesome_flutter: ^10.7.0
 
@@ -40,19 +39,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: "^0.10.0"
-
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/appicon.png"
 
 flutter:
   uses-material-design: true
   assets:
     - assets/skillatics_schwarzWeiss.png
     - assets/skillatics_schwarzWeiss_transparent.png
-    - assets/braintool.png
     - assets/north.png
     - assets/east.png
     - assets/south.png
@@ -62,6 +54,10 @@ flutter:
     - assets/southeast.png
     - assets/southwest.png
     - assets/check.png
+    - assets/skillatics_weiss.png
+    - assets/skillatics_weiss_foreground.png
+    - assets/splash_light.png
+    - assets/splash_dark.png
 
   fonts:
     - family: CustomIcons
@@ -75,16 +71,4 @@ flutter:
     - family: AlphabetLettersIcons
       fonts:
         - asset: fonts/AlphabetLetters.ttf
-
-        
-flutter_native_splash:
-  image: "assets/splash_light.png"
-  color: "#bcfa00"
-  image_dark: "assets/splash_dark.png"
-  color_dark: "#000000"
-  flutter_icons:
-    android: true
-    ios: true
-    image_path: "assets/skillatics_weiss.png"
-    adaptive_icon_background: "#ffffff"
-    adaptive_icon_foreground: "assets/skillatics_weiss_foreground.png"
+  
