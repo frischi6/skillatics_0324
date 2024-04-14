@@ -512,14 +512,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         listToFillContainersIcon[index] =
             Icon(CustomIcons.nine, color: Colors.black, size: sizeIcon - 10);
       } else if (arrowDirection == 'triangle') {
-        listToFillContainersIcon[index] = Icon(CustomIcons.triangle,
-            color: Colors.black, size: sizeIcon + 20);
+        listToFillContainersIcon[index] =
+            Icon(CustomIcons.triangle, color: Colors.black, size: sizeIcon);
       } else if (arrowDirection == 'kreis') {
         listToFillContainersIcon[index] =
-            Icon(CustomIcons.circle, color: Colors.black, size: sizeIcon + 20);
+            Icon(CustomIcons.circle, color: Colors.black, size: sizeIcon);
       } else if (arrowDirection == 'quadrat') {
         listToFillContainersIcon[index] =
-            Icon(CustomIcons.square, color: Colors.black, size: sizeIcon + 20);
+            Icon(CustomIcons.square, color: Colors.black, size: sizeIcon);
       } else if (arrowDirection == 'letterA') {
         listToFillContainersIcon[index] =
             Icon(CustomIcons.a, color: Colors.black, size: sizeIcon - 10);
