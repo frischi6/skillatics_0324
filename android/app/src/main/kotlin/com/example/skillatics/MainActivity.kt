@@ -1,4 +1,4 @@
-package com.example.skillatics
+package com.braintraining.skillatics
 
 import io.flutter.embedding.android.FlutterActivity
 

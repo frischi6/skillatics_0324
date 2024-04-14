@@ -22,9 +22,9 @@
 19-->[androidx.core:core:1.6.0] C:\Users\sarah\.gradle\caches\transforms-3\87955219ada9e4e421baba4d189bfc74\transformed\core-1.6.0\AndroidManifest.xml:24:18-86
 20        android:debuggable="true"
 21        android:icon="@mipmap/ic_launcher"
-22        android:label="Brain Tool" >
+22        android:label="Skillatics" >
 23        <activity
-24            android:name="com.example.skillatics.MainActivity"
+24            android:name="com.braintraining.skillatics.MainActivity"
 25            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
 26            android:exported="true"
 27            android:hardwareAccelerated="true"

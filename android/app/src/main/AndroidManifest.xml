@@ -1,6 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.braintraining.skillatics">
     <application
-        android:label="Brain Tool"
+        android:label="Skillatics"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

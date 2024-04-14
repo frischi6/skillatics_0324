@@ -152,6 +152,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "logger",
+      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/logger-2.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "matcher",
       "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.16+1",
       "packageUri": "lib/",
@@ -192,6 +198,12 @@
       "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/pointycastle-3.7.4",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "rename",
+      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/rename-3.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "sky_engine",
@@ -278,7 +290,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-04-07T16:01:15.474742Z",
+  "generated": "2024-04-14T21:14:21.840698Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

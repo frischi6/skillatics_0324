@@ -1,4 +1,4 @@
-com.example.skillatics
+com.braintraining.skillatics
 attr activityAction
 attr activityName
 attr alpha

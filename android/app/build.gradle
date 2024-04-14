@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.skillatics"
+    namespace "com.braintraining.skillatics"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
