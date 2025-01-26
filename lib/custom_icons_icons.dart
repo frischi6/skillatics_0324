@@ -24,6 +24,7 @@ class CustomIcons {
   static const _kFontFam = 'CustomIcons';
   static const String? _kFontPkg = null;
 
+/*
   static const IconData five =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData four =
@@ -41,7 +42,7 @@ class CustomIcons {
   static const IconData two =
       IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData eight =
-      IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+      IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);*/
 
   //Icons with shapes (not custom icons but constants from cupertino icons)
   static const IconData triangle = IconData(0xf56f,

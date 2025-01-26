@@ -6,16 +6,44 @@ import 'package:skillatics/custom_icons_icons.dart';
 //import 'package:rate_my_app/rate_my_app.dart';
 import 'package:skillatics/trainingPage.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:flutter/gestures.dart'; //damit Action nach Klick auf Einstellungen zurücksetzen möglich
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({
-    Key? key,
-    required this.title,
-    required this.currentCountry,
-  }) : super(key: key);
+  MyHomePage(
+      {Key? key,
+      required this.title,
+      required this.currentCountry,
+      required this.listSelectedColors,
+      required this.listSelectedArrowsPerColor,
+      required this.listSelectedNumbers,
+      required this.listSelectedShapes,
+      required this.listSelectedAlphabetletters,
+      required this.anzColorsOnPage,
+      required this.secChangeColor,
+      required this.secLengthRound,
+      required this.secLengthRest,
+      required this.anzRounds,
+      required this.isElemProSeiteEinmalig,
+      required this.nr_individual,
+      required this.nr_from,
+      required this.nr_to,
+      required this.nr_skip})
+      : super(key: key);
 
   final String title;
   String currentCountry;
+  var listSelectedColors;
+  var listSelectedArrowsPerColor;
+  var listSelectedNumbers;
+  var listSelectedShapes;
+  var listSelectedAlphabetletters;
+  int anzColorsOnPage;
+  int secChangeColor;
+  int secLengthRound;
+  int secLengthRest;
+  int anzRounds;
+  bool isElemProSeiteEinmalig;
+  String nr_individual, nr_from, nr_to, nr_skip;
 
   @override
   _MyHomePageState createState() =>
@@ -31,7 +59,15 @@ class _MyHomePageState extends State<MyHomePage> {
   String keyString = '1';
   int keyInt = 1;
 
+  String nr_from = '';
+  String nr_to = '';
+  String nr_individual = '';
+  String nr_skip = '';
+  bool isNrOutOfRange = false;
+  bool isElemProSeiteEinmalig = false;
+
 //Variabeln für Einstellungen, siehe Skizze, werden an Page2 übergeben
+//werden eingentlich von main.dart übergeben, müssen hier aber einfach auch noch initialisiert werden, Werte werden aber überschrieben
   int anzColorsOnPage = 2;
   int secChangeColor = 5;
   int secLengthRound = 210; //=roundDisplayedSec+roundDisplayedMin in sekunden
@@ -47,10 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
 //Checkboxen, mit allen gewünschten Farben
 //nach jedem (ab-)wählen einer farbe/zahl/etc. des users werden alle selektieren elemente in das jeweilige array gespeichert
   var selectedColors = [];
-  var selectedArrows = [];
-  var selectedNumbers = [];
+  var selectedArrows = []; //arrowdirection, nicht an trainingpage übergeben
+  var selectedArrowcolors =
+      []; //arrowdirection, nicht an trainingpage übergeben
+  var selectedArrowsPerColor =
+      []; //wird an trainingspage übergeben mit ein item pro kombination pfeil & farbe im format arrowdirection_arrowcolor
+
+  var selectedNumbers =
+      []; //String, wird aber nicht so initialisiert weil sonst =[] nicht mehr geht und das machts unnötig kompliziert
   var selectedShapes = [];
   var selectedAlphabetletters = [];
+  //var selectedArrowColors = []; //pfeile sollten nicht nur schwarz sondern auch in anderen farben angezeigt werden können
 
   //beinhaltet hex-werte von allen selected items: hex-wert der gewählten farbe oder bei zahlen/formen/etc immer hex-wert fefefe-> so wird in trainingpage erkannt dass ein icon angezeigt werden muss
   var selectedItems = [];
@@ -90,12 +133,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Wechsel auf Seite 2 mit den angezeigten Farben
   void _changeToPage2() {
-    organizeArrowsColors();
+    organizeElementsColors();
 
     //überprüft, ob Werte gültig sind
-    if (selectedItems.isEmpty && selectedArrows.isEmpty) {
+    if (isNrOutOfRange) {
+      setState(() {
+        textFehlermeldung = 'fehlerNrOutOfRange'.tr;
+      });
+    } else if (selectedArrows.length > 0 && selectedArrowsPerColor.length < 1) {
+      setState(() {
+        textFehlermeldung = 'fehlerArrowsNoColor'.tr;
+      });
+    } else if (selectedItems.isEmpty) {
       setState(() {
         textFehlermeldung = 'fehlerColorsNull'.tr;
+      });
+    } else if (isElemProSeiteEinmalig &&
+        selectedItems.length < anzColorsOnPage) {
+      setState(() {
+        textFehlermeldung = 'fehlerColorsAnzElemEinmal'.tr;
       });
     } else if (selectedItems.length == 1 && anzColorsOnPage > 1) {
       setState(() {
@@ -126,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
           MaterialPageRoute(
             builder: (context) => RandomColorPage2(
               listSelectedColors: selectedItems,
-              listSelectedArrows: selectedArrows,
+              listSelectedArrowsPerColor: selectedArrowsPerColor,
               listSelectedNumbers: selectedNumbers,
               listSelectedShapes: selectedShapes,
               listSelectedAlphabetletters: selectedAlphabetletters,
@@ -136,6 +192,11 @@ class _MyHomePageState extends State<MyHomePage> {
               secLengthRest: secLengthRest,
               anzRounds: anzRounds,
               currentCountry: currentCountry,
+              isElemProSeiteEinmalig: isElemProSeiteEinmalig,
+              nr_individual: nr_individual,
+              nr_from: nr_from,
+              nr_to: nr_to,
+              nr_skip: nr_skip,
             ),
           ),
         );
@@ -143,21 +204,143 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  /// Initializes selectedArrows[] and sets correct color for arrows in selectedcolors that there are only hex and no strings like 'north' etc
-  void organizeArrowsColors() {
+  //Kann der übergebene String in ein int geparst werden?
+  bool isNumeric(String string_value) {
+    try {
+      int.parse(string_value);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  //Liste mit selektierten Zahlen zusammenstellen anhand der 3 Eingabeoptionen (einzelne Zahlen,
+  //  von-bis, ohne einzelne Zahlen), damit diese nachher an Trainingspage übergeben  werden kann
+  bool organizeArrayNumbers() {
+    var splitted_individual, splitted_skip = [];
+    int nr_from_int, nr_to_int = 0;
+    selectedNumbers = []; //Zahlen-Liste leeren
+    isNrOutOfRange = false; //Fehlermeldung zurücksetzen
+
+    //Zahlen von "von-bis" zur Zahlen-Liste hinzufügen
+    if (isNumeric(nr_from) && isNumeric(nr_to)) {
+      nr_from_int = int.parse(nr_from);
+      nr_to_int = int.parse(nr_to);
+      //Nur Zahlen von 0-50 erlaubt
+      if (nr_to_int > 50 || nr_from_int < 0) {
+        isNrOutOfRange = true;
+        return false;
+      }
+      for (int counter = nr_from_int; counter <= nr_to_int; counter++) {
+        selectedNumbers.add(counter.toString());
+      }
+    }
+
+    //Einzeln notierte Zahlen zur Zahlen-Liste hinzufügen
+    if (nr_individual.length > 0) {
+      splitted_individual = nr_individual.split(',');
+      for (int i = 0; i < splitted_individual.length; i++) {
+        if (isNumeric(splitted_individual[i])) {
+          //Nur Zahlen von 0-50 erlaubt
+          if (int.parse(splitted_individual[i]) > 50 ||
+              int.parse(splitted_individual[i]) < 0) {
+            isNrOutOfRange = true;
+            return false;
+          }
+          selectedNumbers.add(splitted_individual[i]);
+        } else {
+          isNrOutOfRange = true;
+          return false;
+        }
+      }
+    }
+
+    //Zahlen aus Feld "Ohne" aus Zahlen-Liste entfernen
+    if (nr_skip.length > 0) {
+      splitted_skip = nr_skip.split(',');
+      for (int i = 0; i < splitted_skip.length; i++) {
+        if (isNumeric(splitted_skip[i])) {
+          for (int j = 0; j < selectedNumbers.length; j++) {
+            if (selectedNumbers[j] == splitted_skip[i]) {
+              selectedNumbers.removeAt(j);
+            }
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  ///Füllt das Array selectedArrowsPerColor ab anhand der selektierten arrowdirections und arrowfarben im Format arrowdirection_arrowcolor
+  void organizeArrowcolors() {
+    selectedArrowsPerColor = [];
+
+    for (int i = 0; i < selectedArrows.length; i++) {
+      for (int j = 0; j < selectedArrowcolors.length; j++) {
+        selectedArrowsPerColor
+            .add(selectedArrows[i] + '_' + selectedArrowcolors[j]);
+      }
+    }
+  }
+
+  /// Initializes selectedItems[] and sets correct color for arrows in selectedcolors that there are only hex and no strings like 'north' etc
+  void organizeElementsColors() {
+    if (!organizeArrayNumbers()) {
+      return; //Fehleingabe bei Zahlen (Out of Range)
+    }
+    organizeArrowcolors();
+
+    selectedItems = []; //Array leeren
     selectedItems = selectedColors +
         selectedNumbers +
-        selectedArrows +
+        selectedArrowsPerColor +
         selectedShapes +
         selectedAlphabetletters;
     for (int i = 0; i < selectedItems.length; i++) {
       if (selectedItems[i].length != 6) {
-        //length 6 sind hexwerte von colors-> restliche itemnamen von zb shapes dürfen nicht einen namen haben der 6 ziffern lang ist
-        //selectedArrows.add(selectedItems[i]);
+        //length 6 sind hexwerte von colors-> restliche itemnamen von zb shapes dürfen nicht einen namen haben der 6 ziffern lang ist!
         selectedItems[i] =
             'fefefe'; //weisser hintergrund aber nicht ffffff damit später erkennbar dass dort arrows angezeigt werden müssen
       } //else ist bereits ein hexcode in selectedColors und kein arrow
     }
+  }
+
+  //Funktion wird nur benötigt wenn von Trainingpage zurück auf Menupage kommt
+  //Es wird kein Array mit nur den Farben an die Menupage übergeben sondern nur selectedItems, das alle Farben + für jedes Icon ein fefefe enthält
+  //Um auf der Trainingpage wieder ein sauberes Array selectedColors zu haben, müssen aus selectedItems alle fefefe-Werte entfernt werden.
+  void initializeSelectedColors(attrSelectedItems) {
+    selectedColors = []; //Array leeren
+    for (int i = 0; i < attrSelectedItems.length; i++) {
+      if (attrSelectedItems[i] != 'fefefe') {
+        selectedColors.add(attrSelectedItems[i]);
+      }
+    }
+  }
+
+  ///Selektierte Pfeilrichtungen und Pfeilfarben sind im Übergabearray von trainingPage im Format arrowdirection_arrowcolor abgespeichert
+  ///Funktion nimmt die Strings auseinander und füllt sie in Arrays selectedArrows und selectedArrowcolors ab
+  ///Ist das Gegenstück von organizeArrowcolors()
+  void initializeArrowdirectionsArrowcolors(listArrowdirectionsArrowcolors) {
+    selectedArrows = [];
+    selectedArrowcolors = [];
+    var tempSubstrings = [];
+
+    for (int i = 0; i < listArrowdirectionsArrowcolors.length; i++) {
+      tempSubstrings = listArrowdirectionsArrowcolors[i].split('_');
+      if (tempSubstrings[0] != '') {
+        //leere Strings nicht dem Array shinzufügen
+        selectedArrows.add(tempSubstrings[0]);
+      }
+      if (tempSubstrings[1] != '') {
+        //leere Strings nicht dem Array hinzufügen
+        selectedArrowcolors.add(tempSubstrings[1]);
+      }
+      tempSubstrings = [];
+    }
+
+    selectedArrows = selectedArrows.toSet().toList();
+    selectedArrowcolors = selectedArrowcolors.toSet().toList();
   }
 
   /// Returnt einen AlertDialog, damit der User Zeit hat auf Position zu gehen
@@ -186,7 +369,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text('\nSkillatics Neuroathletik\n'),
               Text('+41 79 663 48 52'),
               Text('info@skillatics.ch'),
-              Text('www.skillatics.ch'),
+              Text('www.skillatics.ch')
             ],
           ),
         ),
@@ -215,6 +398,7 @@ class _MyHomePageState extends State<MyHomePage> {
           value:
               'f5ff00', //HEX-Code der Farbe, muss zwingend 6-stellig sein (siehe organizeArrowsColors)
           label: 'Gelb'.tr,
+          selected: selectedItems.contains('f5ff00'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.yellow.withOpacity(0.4),
@@ -225,8 +409,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.circular(10))),
         ),
         MultiSelectCard(
-          value: 'ff5f1f',
+          value: 'ff931f',
           label: 'Orange'.tr,
+          selected: selectedItems.contains('ff931f'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.orange.withOpacity(0.4),
@@ -239,6 +424,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: 'ff0000',
           label: 'Rot'.tr,
+          selected: selectedItems.contains('ff0000'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.red.withOpacity(0.4),
@@ -250,6 +436,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: 'f500ab',
           label: 'Pink'.tr,
+          selected: selectedItems.contains('f500ab'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.pink.withOpacity(0.4),
@@ -261,6 +448,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: '6600a1',
           label: 'Violett'.tr,
+          selected: selectedItems.contains('6600a1'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
@@ -273,6 +461,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: '00b2ee',
           label: 'Hellblau'.tr,
+          selected: selectedItems.contains('00b2ee'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.lightBlue.withOpacity(0.4),
@@ -285,6 +474,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: '00008b',
           label: 'Dunkelblau'.tr,
+          selected: selectedItems.contains('00008b'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 00, 0, 139).withOpacity(0.4),
@@ -297,6 +487,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: '00ee00',
           label: 'Hellgrün'.tr,
+          selected: selectedItems.contains('00ee00'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.lightGreen.withOpacity(0.4),
@@ -309,6 +500,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: '006400',
           label: 'Dunkelgrün'.tr,
+          selected: selectedItems.contains('006400'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 0, 100, 0).withOpacity(0.4),
@@ -321,6 +513,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: '00868b',
           label: 'Türkis'.tr,
+          selected: selectedItems.contains('00868b'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 0, 134, 139).withOpacity(0.4),
@@ -333,6 +526,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: 'a8a8a8',
           label: 'Grau'.tr,
+          selected: selectedItems.contains('a8a8a8'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color:
@@ -346,6 +540,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: '000000',
           label: 'Schwarz'.tr,
+          selected: selectedItems.contains('000000'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.6),
@@ -361,6 +556,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: 'bd9b16',
           label: 'Gold'.tr,
+          selected: selectedItems.contains('bd9b16'),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 189, 155, 22).withOpacity(0.4),
@@ -373,6 +569,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: 'ffffff',
           label: 'Weiss'.tr,
+          selected: selectedItems.contains('ffffff'),
           textStyles: const MultiSelectItemTextStyles(
               selectedTextStyle: TextStyle(color: Colors.black)),
           decorations: MultiSelectItemDecorations(
@@ -432,37 +629,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
       items: [
         MultiSelectCard(
-          value: 'north',
-          child: const Icon(Icons.north),
-        ),
+            value: 'north',
+            child: const Icon(Icons.north),
+            selected: selectedArrows.contains('north')),
         MultiSelectCard(
-          value: 'east',
-          child: const Icon(Icons.east),
-        ),
+            value: 'east',
+            child: const Icon(Icons.east),
+            selected: selectedArrows.contains('east')),
         MultiSelectCard(
-          value: 'south',
-          child: const Icon(Icons.south),
-        ),
+            value: 'south',
+            child: const Icon(Icons.south),
+            selected: selectedArrows.contains('south')),
         MultiSelectCard(
-          value: 'west',
-          child: const Icon(Icons.west),
-        ),
+            value: 'west',
+            child: const Icon(Icons.west),
+            selected: selectedArrows.contains('west')),
         MultiSelectCard(
-          value: 'northwest',
-          child: const Icon(Icons.north_west),
-        ),
+            value: 'northwest',
+            child: const Icon(Icons.north_west),
+            selected: selectedArrows.contains('northwest')),
         MultiSelectCard(
-          value: 'northeast',
-          child: const Icon(Icons.north_east),
-        ),
+            value: 'northeast',
+            child: const Icon(Icons.north_east),
+            selected: selectedArrows.contains('northeast')),
         MultiSelectCard(
-          value: 'southeast',
-          child: const Icon(Icons.south_east),
-        ),
+            value: 'southeast',
+            child: const Icon(Icons.south_east),
+            selected: selectedArrows.contains('southeast')),
         MultiSelectCard(
-          value: 'southwest',
-          child: const Icon(Icons.south_west),
-        ),
+            value: 'southwest',
+            child: const Icon(Icons.south_west),
+            selected: selectedArrows.contains('southwest')),
       ],
       onChange: (allSelectedItems, selectedItem) {
         selectedArrows = allSelectedItems;
@@ -470,21 +667,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  /// returnt ein MultiSelectContainer, in dem alle Nummern ausgewählt werden können
-  MultiSelectContainer buildNumberselect() {
-    var numbersWrittenOut = [];
-    numbersWrittenOut = [
-      'zero', //zero wird nicht gebraucht aber so geht es auf in for-loop weil startet mit i = 1
-      'one',
-      'two',
-      'three',
-      'four',
-      'five',
-      'six',
-      'seven',
-      'eight',
-      'nine'
-    ];
+  MultiSelectContainer buildArrowColorselect() {
     return MultiSelectContainer(
       key: Key(
           keyString), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
@@ -494,34 +677,95 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.only(right: 5),
         child: Icon(
           Icons.check,
-          color: Colors.black,
+          color: Colors.white,
           size: 14,
         ),
       )),
-      textStyles: const MultiSelectTextStyles(
-          textStyle: TextStyle(
-              fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
-          selectedTextStyle: TextStyle(
-              fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black)),
-      itemsDecoration: MultiSelectDecorations(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(),
-          ),
-          selectedDecoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all())),
       items: [
-        for (int i = 1; i <= 9; i++)
-          MultiSelectCard(
-            value: numbersWrittenOut[i],
-            label: i.toString(),
+        MultiSelectCard(
+          value:
+              '4278190080', //hex 000000, schwarz, berechnung: int.parse('0xff000000')
+          label: '',
+          selected: selectedArrowcolors.contains('4278190080'),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10))),
+          textStyles: const MultiSelectItemTextStyles(
+            selectedTextStyle: TextStyle(color: Colors.white),
           ),
+        ),
+        MultiSelectCard(
+          value: '4293444664', //hex e8c438, gelb
+          label: '',
+          selected: selectedArrowcolors.contains('4293444664'),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.yellow.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.yellow,
+                  borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: '4294901760', //hex ff0000, red
+          label: '',
+          selected: selectedArrowcolors.contains('4294901760'),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: '4290795263', //hex c056ff, violett
+          label: '',
+          selected: selectedArrowcolors.contains('4290795263'),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 102, 0, 161),
+                  borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: '4278235886', //hex 00b2ee, blue
+          label: '',
+          selected: selectedArrowcolors.contains('4278235886'),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.lightBlue.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.lightBlue,
+                  borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: '4278251008', //hex 00ee00, green
+          label: '',
+          selected: selectedArrowcolors.contains('4278251008'),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.lightGreen.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.lightGreen,
+                  borderRadius: BorderRadius.circular(10))),
+        ),
       ],
       onChange: (allSelectedItems, selectedItem) {
-        selectedNumbers = allSelectedItems;
+        selectedArrowcolors = allSelectedItems;
       },
     );
   }
@@ -556,16 +800,19 @@ class _MyHomePageState extends State<MyHomePage> {
         MultiSelectCard(
           value: 'triangle',
           child: const Icon(CustomIcons.triangle_empty),
+          selected: selectedShapes.contains('triangle'),
         ),
         MultiSelectCard(
           value:
               'quadrat', //muss deutsch sein weil square 6 buchstaben lang ist und länge 6 ist für color reserviert (hex-werte haben länge 6)-> entscheidend für organizeArrowsColors
           child: const Icon(CustomIcons.square_empty),
+          selected: selectedShapes.contains('quadrat'),
         ),
         MultiSelectCard(
           value:
               'kreis', //muss deutsch sein weil circle 6 buchstaben lang ist und länge 6 ist für color reserviert (hex-werte haben länge 6)-> entscheidend für organizeArrowsColors
           child: const Icon(CustomIcons.circle_empty),
+          selected: selectedShapes.contains('kreis'),
         ),
       ],
       onChange: (allSelectedItems, selectedItem) {
@@ -614,9 +861,10 @@ class _MyHomePageState extends State<MyHomePage> {
       items: [
         for (int i = 0; i < alphabetlist.length; i++)
           MultiSelectCard(
-            value: 'letter' + alphabetlist[i],
-            label: alphabetlist[i],
-          ),
+              value: 'letter' + alphabetlist[i],
+              label: alphabetlist[i],
+              selected:
+                  selectedAlphabetletters.contains('letter' + alphabetlist[i])),
       ],
       onChange: (allSelectedItems, selectedItem) {
         selectedAlphabetletters = allSelectedItems;
@@ -627,6 +875,33 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     currentCountry = widget.currentCountry;
+    selectedItems = widget.listSelectedColors;
+    selectedArrowsPerColor = widget.listSelectedArrowsPerColor;
+    selectedNumbers = widget.listSelectedNumbers;
+    selectedShapes = widget.listSelectedShapes;
+    selectedAlphabetletters = widget.listSelectedAlphabetletters;
+    anzColorsOnPage = widget.anzColorsOnPage;
+    secChangeColor = widget.secChangeColor;
+    secLengthRound = widget.secLengthRound;
+    secLengthRest = widget.secLengthRest;
+    anzRounds = widget.anzRounds;
+    isElemProSeiteEinmalig = widget.isElemProSeiteEinmalig;
+    nr_individual = widget.nr_individual;
+    nr_from = widget.nr_from;
+    nr_to = widget.nr_to;
+    nr_skip = widget.nr_skip;
+
+    initializeSelectedColors(
+        selectedItems); //selectedColors = selectedItems ohne fefefe-Werte
+    initializeArrowdirectionsArrowcolors(
+        selectedArrowsPerColor); //array mit arrowdirection_arrowcolor aufteilen in array mit arrowdirections und array mit arrowcolors
+
+    //dauer durchlauf & pause setzen
+    roundDisplayedSec = secLengthRound % 60;
+    roundDisplayedMin = (secLengthRound / 60).floor();
+    restDisplayedSec = secLengthRest % 60;
+    restDisplayedMin = (secLengthRest / 60).floor();
+
     super.initState();
     //nach diesem aufruf wird automatisch build() ausgeführt
   }
@@ -702,7 +977,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildColorselect(),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 25),
               Text(
                 'buchstaben'.tr,
                 style: TextStyle(fontStyle: FontStyle.italic),
@@ -753,17 +1028,117 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildAlphabetselect(),
               ),
-              SizedBox(height: 15),
-              Text(
-                'zahlen'.tr,
-                style: TextStyle(fontStyle: FontStyle.italic),
+              SizedBox(height: 25),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'zahlen'.tr,
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  SizedBox(
+                    width: 3,
+                  ),
+                ],
               ),
+
               SizedBox(height: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: buildNumberselect(),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('einzelneZahlen'.tr),
+                  SizedBox(width: 10),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      //height: 28,
+                      child: TextFormField(
+                          initialValue: nr_individual,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'zB'.tr + ' 10,20,30',
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 4),
+                          ),
+                          onChanged: (value) {
+                            nr_individual = value;
+                          }))
+                ],
+              ),
+
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('von'.tr),
+                  SizedBox(width: 10),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      //height: 28,
+                      child: TextFormField(
+                          initialValue: nr_from,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'zB'.tr + ' 1',
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 4),
+                          ),
+                          onChanged: (value) {
+                            nr_from = value;
+                          })),
+                  SizedBox(width: 10),
+                  Text('bis'.tr),
+                  SizedBox(width: 10),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      //height: 28,
+                      child: TextFormField(
+                          initialValue: nr_to,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'zB'.tr + ' 8',
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 4),
+                          ),
+                          onChanged: (value) {
+                            nr_to = value;
+                          })),
+                ],
               ),
               SizedBox(height: 15),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('ohne'.tr),
+                  SizedBox(width: 10),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      //height: 28,
+                      child: TextFormField(
+                          initialValue: nr_skip,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'zB'.tr + ' 2,4',
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 4),
+                          ),
+                          onChanged: (value) {
+                            nr_skip = value;
+                          }))
+                ],
+              ),
+
+              SizedBox(height: 25),
               Text(
                 'pfeile'.tr,
                 style: TextStyle(fontStyle: FontStyle.italic),
@@ -773,7 +1148,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 constraints: BoxConstraints(),
                 child: buildArrowselect(),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 20),
+              ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: buildArrowColorselect(),
+              ),
+              SizedBox(height: 25),
               Text(
                 'formen'.tr,
                 style: TextStyle(fontStyle: FontStyle.italic),
@@ -793,7 +1173,7 @@ class _MyHomePageState extends State<MyHomePage> {
               //Dropdown - wie viele Farben aufs Mal angezeigt werden
               SizedBox(height: 12),
               Text(
-                'selAnzFarben'.tr,
+                'selAnzElem'.tr,
                 style: TextStyle(fontSize: 15),
               ),
               NumberPicker(
@@ -806,6 +1186,31 @@ class _MyHomePageState extends State<MyHomePage> {
                 textStyle: TextStyle(fontSize: 13),
                 onChanged: (value) => setState(() => anzColorsOnPage = value),
               ),
+              SizedBox(height: 10),
+
+              //Checkbox - ob jedes Element pro Seite nur einmal vorkommen darf oder nicht
+              //  Bsp.: 1,3,5,7 ausgewählt, 3 Elem pro Mal anzeigen-> Anzeige 1-3-1 nicht erlaubt wenn Checkbox aktiviert
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.85,
+                child: Transform.scale(
+                  //Transform damit Grösse Checkbox angepasst werden kann
+                  scale: 0.7,
+                  child: CheckboxListTile(
+                    //Unterschied zu Checkbox(): Mit ..ListTile() kann Text mitgegeben werden
+                    value: isElemProSeiteEinmalig,
+                    onChanged: (value) => setState(() => isElemProSeiteEinmalig =
+                        value ??= //wenn value null dann per default false nehmen
+                            false), //setState damit neu geladen wird und Checkbox dann angewählt ist
+                    title: Text(
+                      'selElemEinmalig'.tr,
+                      style: TextStyle(fontSize: 18), //size 18 weil in scale
+                    ),
+                    controlAffinity: ListTileControlAffinity
+                        .leading, //Checkbox links von Text
+                  ),
+                ),
+              ),
+
               SizedBox(height: 12),
 
               Divider(
@@ -998,10 +1403,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               SizedBox(height: 10),
-              Text(
-                this.textFehlermeldung + '\n',
-                key: Key(keyString), //funktioniert nicht
-                style: TextStyle(color: Colors.red),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Center(
+                  child: Text(
+                    this.textFehlermeldung + '\n',
+                    key: Key(keyString), //funktioniert nicht
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
               ),
               TextButton(
                 child: Text(
@@ -1013,6 +1424,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 autofocus: true,
                 onPressed: _changeToPage2,
                 onLongPress: _changeToPage2,
+              ),
+              SizedBox(height: 5),
+              RichText(
+                text: TextSpan(
+                    text: 'reset'.tr,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => Navigator.popAndPushNamed(
+                          context, '/')), //Einstellungen MenuPage reseten
               ),
               SizedBox(height: 20),
               SizedBox(

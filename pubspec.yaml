@@ -72,4 +72,8 @@ flutter:
     - family: AlphabetLettersIcons
       fonts:
         - asset: fonts/AlphabetLetters.ttf
+
+    - family: NumberIcons
+      fonts:
+        - asset: fonts/NumberZeroToFifty.ttf
   

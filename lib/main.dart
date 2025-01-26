@@ -25,6 +25,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   MaterialColor colorCustom = MaterialColor(0xffbcfa00, color);
 
+  int anzColorsOnPage = 2;
+  int secChangeColor = 5;
+  int secLengthRound = 210; //=roundDisplayedSec+roundDisplayedMin in sekunden
+  int secLengthRest = 90; //=restDisplayedSec+restDisplayedMin in sekunden
+  int anzRounds = 5;
+  bool isElemProSeiteEinmalig = false;
+
   MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -50,6 +57,23 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(
         title: 'Skillatics',
         currentCountry: "GB", //aktuelle Flagge die oben rechts erscheint
+        listSelectedColors: [],
+        listSelectedArrowsPerColor: [
+          '_4278190080'
+        ], //per default schwarze arrowcolor selektiert
+        listSelectedNumbers: [],
+        listSelectedShapes: [],
+        listSelectedAlphabetletters: [],
+        anzColorsOnPage: anzColorsOnPage,
+        secChangeColor: secChangeColor,
+        secLengthRound: secLengthRound,
+        secLengthRest: secLengthRest,
+        anzRounds: anzRounds,
+        isElemProSeiteEinmalig: isElemProSeiteEinmalig,
+        nr_individual: '',
+        nr_from: '',
+        nr_to: '',
+        nr_skip: '',
       ),
       translations: TranslationText(),
       locale: const Locale('de', 'DE'),

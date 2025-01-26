@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skillatics/custom_icons_icons.dart';
 import 'package:skillatics/menuPage.dart';
+import 'package:skillatics/number_zero_to_fifty_icons.dart';
 
 class RandomColorPage2 extends StatefulWidget {
   RandomColorPage2(
       {Key? key,
       required this.listSelectedColors,
-      required this.listSelectedArrows,
+      required this.listSelectedArrowsPerColor,
       required this.listSelectedNumbers,
       required this.listSelectedShapes,
       required this.listSelectedAlphabetletters,
@@ -19,11 +20,16 @@ class RandomColorPage2 extends StatefulWidget {
       required this.secLengthRound,
       required this.secLengthRest,
       required this.anzRounds,
-      required this.currentCountry})
+      required this.currentCountry,
+      required this.isElemProSeiteEinmalig,
+      required this.nr_individual,
+      required this.nr_from,
+      required this.nr_to,
+      required this.nr_skip})
       : super(key: key);
 
   var listSelectedColors;
-  var listSelectedArrows;
+  var listSelectedArrowsPerColor;
   var listSelectedNumbers;
   var listSelectedShapes;
   var listSelectedAlphabetletters;
@@ -32,7 +38,12 @@ class RandomColorPage2 extends StatefulWidget {
   int secLengthRound;
   int secLengthRest;
   int anzRounds;
+  bool isElemProSeiteEinmalig;
   String currentCountry;
+  String nr_individual,
+      nr_from,
+      nr_to,
+      nr_skip; //wird in trainingpage.dart nicht gebraucht, aber muss wieder an menupage zurückgegeben werden
 
   @override
   _RandomColorPage2 createState() => _RandomColorPage2();
@@ -43,41 +54,17 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var listWithSelectedColors = []; //gefüllt mit ColorsCheckbox-Elemente
   var listWithSelectedHex = []; //gefüllt mit Hex-Werten (int)
   var listHeight4Container = [];
-  var listToFillContainersHex = [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
-  ]; //nur Füllwerte
+  var listToFillContainersHex = []; //nur Füllwerte
 
-  var listWithSelectedArrows = [];
+  var listWithSelectedArrowsPerColor = [];
   var listWithSelectedNumbers = [];
   var listWithSelectedShapes = [];
   var listWithSelectedAlphabetletters = [];
   var listWithSelectedIcons =
       []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers + listWithSelectedShapes + listWithSelectedAlphabetletters
-  var listToFillContainersIcon = [
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north),
-    const Icon(Icons.north)
-  ];
+  var listToFillContainersIcon = [];
+
+  var listIconsNumbers = [];
 
   //var list4RandomHex = [0xffff0000, 0xffff0000, 0xffff0000, 0xffff0000];
   int anzColorsOnPage2 = 1;
@@ -114,17 +101,27 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   String lastRoundFirstArrowDirection =
       ''; //hält erstes icon der letzten runde fest damit nicht nach change genau gleiche anordnung ist und es so aussieht als würde das programm stocken
 
+  //new 1.12.24
+  bool isElemProSeiteEinmalig2 = false;
+  int firstHexLastRound = 0;
+  var firstItemLastRound;
+  var listToFillContainersIconDuplicate = [];
+  var listToFillContainersHexDuplicate = [];
+
   @override
   void initState() {
     _initializeSettinvariables();
     _initializeListHeight4Containers();
     _initializeListWithAllHex();
     _initializeListSelectedArrows();
-    organizeRound();
+    init_new();
+    initOptionEinmalig();
+    //organizeRound();
     _timer = Timer.periodic(
         const Duration(seconds: 1),
         (Timer timer) => setState(() {
-              timemanagement();
+              //timemanagement();
+              timemanagement_new();
             }));
 
     super.initState();
@@ -134,6 +131,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
+      //todo updaten
       onWillPop: (() async =>
           false), //damit swipe back(ios) bzw. Back Button (android) deaktiviert
       child: Scaffold(
@@ -149,124 +147,166 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 color: Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
-              child: Stack(
-                children: [
-                  Center(child: listToFillContainersIcon[0]),
-                  Center(
-                    child: Text(
-                      restText,
-                      style: TextStyle(
-                          color: Color(colorRestText),
-                          fontSize: fontsizeRestText,
-                          fontWeight: FontWeight.bold),
+              child: restText == ''
+                  ? listToFillContainersIcon[0]
+                  : Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        restText,
+                        style: TextStyle(
+                            color: Color(colorRestText),
+                            fontSize: fontsizeRestText,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ],
-              ),
             ),
             Container(
-              child: listToFillContainersIcon[1],
+              child: listToFillContainersIcon.length > 1
+                  ? listToFillContainersIcon[1]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[1]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[1]),
+                  color: listToFillContainersHex.length > 1
+                      ? Color(listToFillContainersHex[1])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[2],
+              child: listToFillContainersIcon.length > 2
+                  ? listToFillContainersIcon[2]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[2]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[2]),
+                  color: listToFillContainersHex.length > 2
+                      ? Color(listToFillContainersHex[2])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[3],
+              child: listToFillContainersIcon.length > 3
+                  ? listToFillContainersIcon[3]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[3]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[3]),
+                  color: listToFillContainersHex.length > 3
+                      ? Color(listToFillContainersHex[3])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[4],
+              child: listToFillContainersIcon.length > 4
+                  ? listToFillContainersIcon[4]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[4]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[4]),
+                  color: listToFillContainersHex.length > 4
+                      ? Color(listToFillContainersHex[4])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[5],
+              child: listToFillContainersIcon.length > 5
+                  ? listToFillContainersIcon[5]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[5]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[5]),
+                  color: listToFillContainersHex.length > 5
+                      ? Color(listToFillContainersHex[5])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[6],
+              child: listToFillContainersIcon.length > 6
+                  ? listToFillContainersIcon[6]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[6]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[6]),
+                  color: listToFillContainersHex.length > 6
+                      ? Color(listToFillContainersHex[6])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[7],
+              child: listToFillContainersIcon.length > 7
+                  ? listToFillContainersIcon[7]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[7]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[7]),
+                  color: listToFillContainersHex.length > 7
+                      ? Color(listToFillContainersHex[7])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[8],
+              child: listToFillContainersIcon.length > 8
+                  ? listToFillContainersIcon[8]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[8]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[8]),
+                  color: listToFillContainersHex.length > 8
+                      ? Color(listToFillContainersHex[8])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[9],
+              child: listToFillContainersIcon.length > 9
+                  ? listToFillContainersIcon[9]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[9]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                  color: Color(listToFillContainersHex[9]),
+                  color: listToFillContainersHex.length > 9
+                      ? Color(listToFillContainersHex[9])
+                      : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
             Container(
-              child: listToFillContainersIcon[10],
+              child: listToFillContainersIcon.length > 10
+                  ? listToFillContainersIcon[10]
+                  : listToFillContainersIcon[0],
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[10]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: Color(listToFillContainersHex[10]),
+                color: listToFillContainersHex.length > 10
+                    ? Color(listToFillContainersHex[10])
+                    : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
             ),
             Container(
-              child: listToFillContainersIcon[11],
-              color: Color(listToFillContainersHex[11]),
+              child: listToFillContainersIcon.length > 11
+                  ? listToFillContainersIcon[11]
+                  : listToFillContainersIcon[0],
+              color: listToFillContainersHex.length > 11
+                  ? Color(listToFillContainersHex[11])
+                  : Color(listToFillContainersHex[0]),
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[11]),
               width: MediaQuery.of(context).size.width,
@@ -367,6 +407,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     secsLengthRoundCD = secLengthRound2 % 60;
     minsLengthRestCD = secLengthRest2 ~/ 60;
     secsLengthRestCD = secLengthRest2 % 60;
+
+    isElemProSeiteEinmalig2 = widget.isElemProSeiteEinmalig;
   }
 
   //füllt listWithSelectedColors ab aus widget.
@@ -375,7 +417,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   }
 
   void _initializeListSelectedArrows() {
-    listWithSelectedArrows = widget.listSelectedArrows;
+    listWithSelectedArrowsPerColor = widget.listSelectedArrowsPerColor;
     _initializeListSelectedNumbers();
     _initializeListSelectedShapes();
     _initializeListSelectedAlphabetletters();
@@ -384,6 +426,125 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   void _initializeListSelectedNumbers() {
     listWithSelectedNumbers = widget.listSelectedNumbers;
+    _initializeIconsNumbers();
+  }
+
+  //safr new
+  //Array abfüllen in dem alle Zahlen als Icons von 0-50 drin erfasst sind
+  void _initializeIconsNumbers() {
+    var sizeIcon = 60.0; //grundsätzlich alle icons grösse 60
+    //bei nur 1-4 anzeigen aufs mal sollten die icons aber ein wenig grösser sein, damit sie besser erkennbar sind im training
+    if (anzColorsOnPage2 == 4) {
+      sizeIcon = 90.0;
+    } else if (anzColorsOnPage2 == 3) {
+      sizeIcon = 110.0;
+    } else if (anzColorsOnPage2 == 2) {
+      sizeIcon = 160.0;
+    } else if (anzColorsOnPage2 == 1) {
+      sizeIcon = 200.0;
+    }
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_0, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_1, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_2, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_3, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_4, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_5, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_6, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_7, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_8, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_9, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_10, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_11, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_12, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_13, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_14, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_15, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_16, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_17, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_18, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_19, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_20, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_21, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_22, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_23, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_24, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_25, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_26, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_27, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_28, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_29, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_30, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_31, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_32, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_33, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_34, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_35, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_36, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_37, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_38, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_39, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_40, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_41, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_42, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_43, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_44, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_45, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_46, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_47, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_48, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_49, color: Colors.black, size: sizeIcon - 10));
+    listIconsNumbers
+        .add(Icon(NumberIcons.nr_50, color: Colors.black, size: sizeIcon - 10));
   }
 
   void _initializeListSelectedShapes() {
@@ -395,7 +556,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   }
 
   void _initializeListSelectedIcons() {
-    listWithSelectedIcons = listWithSelectedArrows +
+    listWithSelectedIcons = listWithSelectedArrowsPerColor +
         listWithSelectedNumbers +
         listWithSelectedShapes +
         listWithSelectedAlphabetletters;
@@ -439,8 +600,29 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     currentMinsCD = 0;
   }
 
+  bool isNumeric(String string_value) {
+    try {
+      int.parse(string_value!);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  int getColorcodeByArrowPerColor(arrowdirection_arrowcolor) {
+    //parameter wird nach diesem format übergeben: arrowdirection_arrowcolor
+    //returnt wird arrowcolor
+    return int.parse(arrowdirection_arrowcolor.substring(
+        arrowdirection_arrowcolor.indexOf('_') + 1,
+        arrowdirection_arrowcolor.length));
+  }
+
   /// füllt listToFillContainersIcon mit korrektem icon und farbe inkl ob arrow sichtbar ist oder selbe farbe hat wie hintergrund
   void addToListToFillContainersIcon(index, arrowDirection, arrowVisible) {
+    if (index >= listToFillContainersIcon.length) {
+      listToFillContainersIcon.add(Icon(Icons.north));
+    }
+
     //4 = 90
     //3 = 110
     //2 = 120
@@ -448,7 +630,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     var sizeIcon = 60.0; //grundsätzlich alle icons grösse 60
 
     if (arrowVisible) {
-      //todo 28.10.23
       //bei nur 1-4 anzeigen aufs mal sollten die icons aber ein wenig grösser sein, damit sie besser erkennbar sind im training
       if (anzColorsOnPage2 == 4) {
         sizeIcon = 90.0;
@@ -460,57 +641,51 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         sizeIcon = 200.0;
       }
 
-      if (arrowDirection == 'north') {
+//idee safr 24.10.24: listSelectedNumbers werdden als zahl in string von menupage übergeben zb '1' oder '23'
+//in ein array wird das icon initialisiert Icon(Icons.north, color: Colors.black, size: sizeIcon);, damit das ganze ausgelagert werden kann und nicht alles
+//  hier in dieser funktion ist
+//hier check if isnumeric(arrowDirection) dann mit index aus array auslesen-> braucht nicht 50 if-statements
+      if (isNumeric(arrowDirection)) {
         listToFillContainersIcon[index] =
-            Icon(Icons.north, color: Colors.black, size: sizeIcon);
-      } else if (arrowDirection == 'east') {
-        listToFillContainersIcon[index] =
-            Icon(Icons.east, color: Colors.black, size: sizeIcon);
-      } else if (arrowDirection == 'south') {
-        listToFillContainersIcon[index] =
-            Icon(Icons.south, color: Colors.black, size: sizeIcon);
-      } else if (arrowDirection == 'west') {
-        listToFillContainersIcon[index] =
-            Icon(Icons.west, color: Colors.black, size: sizeIcon);
-      } else if (arrowDirection == 'northeast') {
-        listToFillContainersIcon[index] =
-            Icon(Icons.north_east, color: Colors.black, size: sizeIcon);
-      } else if (arrowDirection == 'northwest') {
-        listToFillContainersIcon[index] =
-            Icon(Icons.north_west, color: Colors.black, size: sizeIcon);
-      } else if (arrowDirection == 'southeast') {
-        listToFillContainersIcon[index] =
-            Icon(Icons.south_east, color: Colors.black, size: sizeIcon);
-      } else if (arrowDirection == 'southwest') {
-        listToFillContainersIcon[index] =
-            Icon(Icons.south_west, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'one') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.one, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'two') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.two, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'three') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.three, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'four') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.four, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'five') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.five, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'six') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.six, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'seven') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.seven, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'eight') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.eight, color: Colors.black, size: sizeIcon - 10);
-      } else if (arrowDirection == 'nine') {
-        listToFillContainersIcon[index] =
-            Icon(CustomIcons.nine, color: Colors.black, size: sizeIcon - 10);
+            listIconsNumbers[int.parse(arrowDirection)];
+      } else if (arrowDirection.contains('northeast_')) {
+        //arrows werden im format direction_arrowcolor übergeben
+        listToFillContainersIcon[index] = Icon(
+          Icons.north_east,
+          color: Color(getColorcodeByArrowPerColor(
+              arrowDirection)), //arrowcolor auslesen
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('northwest_')) {
+        listToFillContainersIcon[index] = Icon(Icons.north_west,
+            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+            size: sizeIcon);
+      } else if (arrowDirection.contains('southeast_')) {
+        listToFillContainersIcon[index] = Icon(Icons.south_east,
+            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+            size: sizeIcon);
+      } else if (arrowDirection.contains('southwest_')) {
+        listToFillContainersIcon[index] = Icon(Icons.south_west,
+            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+            size: sizeIcon - 10);
+      } else if (arrowDirection.contains('north_')) {
+        listToFillContainersIcon[index] = Icon(
+          Icons.north,
+          color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+          size: sizeIcon,
+        );
+      } else if (arrowDirection.contains('east_')) {
+        listToFillContainersIcon[index] = Icon(Icons.east,
+            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+            size: sizeIcon);
+      } else if (arrowDirection.contains('south_')) {
+        listToFillContainersIcon[index] = Icon(Icons.south,
+            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+            size: sizeIcon);
+      } else if (arrowDirection.contains('west_')) {
+        listToFillContainersIcon[index] = Icon(Icons.west,
+            color: Color(getColorcodeByArrowPerColor(arrowDirection)),
+            size: sizeIcon);
       } else if (arrowDirection == 'triangle') {
         listToFillContainersIcon[index] =
             Icon(CustomIcons.triangle, color: Colors.black, size: sizeIcon);
@@ -606,196 +781,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     }
   }
 
-  /// wird nur bei wechsel von rest zu round aufgerufen und ganz am Anfang bei Start page2
-  void organizeRound() {
-    _initializeListHeight4Containers(); //damit nach rest wieder alle Grössen der Container stimmen
-    currentSecsCD = secsLengthRoundCD;
-    currentMinsCD = minsLengthRoundCD;
-    int randomInt;
-    Random random = Random();
-    for (var i = 0; i < anzColorsOnPage2; i++) {
-      randomInt = random.nextInt(listWithSelectedColors.length);
-      //damit nicht gleiche Farben aufs Mal angezeigt werden
-      if (i == 0 || listWithSelectedHex[randomInt] == 4294901502) {
-        //4294901502 ist wert, als der 0xfffefefe geparst in listWithSelectedHex gespeichert ist
-        listToFillContainersHex[i] = listWithSelectedHex[randomInt];
-        colorRestText = listToFillContainersHex[i]; //damit Text nicht erkennbar
-        restText = ''; //damit pfeil gute Position hat
-        paddingTopRestText = 0.0; //damit pfeil gute Position hat
-        fontsizeRestText = 0.0; //damit pfeil gute Position hat
-      } else {
-        while (
-            listToFillContainersHex[i - 1] == listWithSelectedHex[randomInt]) {
-          randomInt = random.nextInt(listWithSelectedColors.length);
-        }
-        listToFillContainersHex[i] = listWithSelectedHex[randomInt];
-      }
-    }
-    //organize arrows
-    for (int i = 0; i < listToFillContainersHex.length; i++) {
-      if (listToFillContainersHex[i] != int.parse('0xfffefefe')) {
-        //arrow not visible
-        addToListToFillContainersIcon(i, null, false);
-      } else {
-        //arrow visible
-        String arrowDirection =
-            listWithSelectedIcons[random.nextInt(listWithSelectedIcons.length)];
-        addToListToFillContainersIcon(i, arrowDirection, true);
-      }
-    }
-  }
-
-  /// wird nur bei wechsel von round zu rest aufgerufen
-  void organizeRest() {
-    currentSecsCD = secsLengthRestCD;
-    currentMinsCD = minsLengthRestCD;
-    for (var i = 0; i < anzColorsOnPage2; i++) {
-      //this.list4RandomHex[i] = 0xff000000;
-      listToFillContainersHex[i] = 0xff000000;
-      listHeight4Container[i] = 0; //damit Rest angezeigt werden kann
-    }
-    listHeight4Container[0] = bodyPercentage /
-        1; //damit Rest angezeigt werden kann-> 1. container nimmt 100% ein
-    colorRestText = 0xffffffff;
-    restText = 'pause'.tr;
-    paddingTopRestText = MediaQuery.of(context).size.height / 3;
-    fontsizeRestText = 80.0;
-    for (int i = 0; i < listToFillContainersHex.length; i++) {
-      //damit alle pfeile schwarz und somit nicht sichtbar in pause
-      listToFillContainersIcon[i] =
-          const Icon(Icons.north, color: Colors.black);
-    }
-  }
-
-  /// Methode, die jede Sekunde wegen _timer aufgerufen wird
-  /// managt farbwechsel, ende der Übung und Countdown
-  void timemanagement() {
-    int randomInt;
-    Random random = Random();
-    if (anzRoundsDone <= anzRounds2) {
-      outerloop:
-      if (isRest) {
-        //management change
-        if (secsLengthRestCD == 1 && minsLengthRestCD == 0) {
-          isRest = false;
-          anzRoundsDone++;
-          if (anzRoundsDone <= anzRounds2) {
-            //dass nicht organizeRound aufgerufen wird wenn eig fertig wäre
-            organizeRound();
-          } else {
-            secsLengthRestCD--;
-            currentSecsCD = secsLengthRestCD;
-          }
-          minsLengthRestCD =
-              secLengthRest2 ~/ 60; //damit ready für nächsten durchgang
-          secsLengthRestCD = secLengthRest2 % 60;
-        } else {
-          //management time
-          if (secsLengthRestCD > 0) {
-            secsLengthRestCD--;
-          } else if (minsLengthRestCD > 0) {
-            minsLengthRestCD--;
-            secsLengthRestCD = 59;
-            currentMinsCD = minsLengthRestCD;
-          }
-          currentSecsCD = secsLengthRestCD;
-        }
-      } else {
-        //isRound
-        //management change
-        if (secsLengthRoundCD == 1 && minsLengthRoundCD == 0) {
-          isRest = true;
-          organizeRest();
-          minsLengthRoundCD =
-              secLengthRound2 ~/ 60; //damit ready für nächsten durchgang
-          secsLengthRoundCD = secLengthRound2 % 60;
-          break outerloop;
-        } else {
-          //management time
-          if (secsLengthRoundCD > 0) {
-            secsLengthRoundCD--;
-          } else if (minsLengthRoundCD > 0) {
-            minsLengthRoundCD--;
-            secsLengthRoundCD = 59;
-            currentMinsCD = minsLengthRoundCD;
-          }
-          currentSecsCD = secsLengthRoundCD;
-        }
-        //management color
-        if ((secLengthRound2 - (secsLengthRoundCD + minsLengthRoundCD * 60)) %
-                    secChangeColor2 ==
-                0 &&
-            (secsLengthRoundCD != 0 || minsLengthRoundCD != 0)) {
-          //color wechseln
-          for (var i = 0; i < anzColorsOnPage2; i++) {
-            randomInt = random.nextInt(listWithSelectedColors.length);
-
-            //damit oberste farbe nicht gleich ist wie vor change damit die anordnung sicher nicht identisch ist
-            if (i == 0) {
-              if (listWithSelectedColors.length > 1) {
-                //errorhandling damit nicht endlosloop wenn nur 1 farbe ausgewählt ist (length == 1)
-                while (listWithSelectedHex[randomInt] == lastRoundFirstColor &&
-                    listWithSelectedHex[randomInt] != 4294901502) {
-                  randomInt = random.nextInt(listWithSelectedColors.length);
-                }
-                lastRoundFirstColor = listWithSelectedHex[randomInt];
-              }
-            }
-            //damit nicht gleiche Farben aufs Mal angezeigt werden
-            if (i == 0 || listWithSelectedHex[randomInt] == 4294901502) {
-              listToFillContainersHex[i] = listWithSelectedHex[randomInt];
-              colorRestText = listToFillContainersHex[i];
-            } else {
-              //todo 28.10. hier wird farbe gesetzt
-              while (listToFillContainersHex[i - 1] ==
-                  listWithSelectedHex[randomInt]) {
-                randomInt = random.nextInt(listWithSelectedColors.length);
-              }
-              listToFillContainersHex[i] = listWithSelectedHex[randomInt];
-            }
-          }
-
-          //organize arrows
-          String arrowDirection = '';
-          for (int i = 0; i < listToFillContainersHex.length; i++) {
-            if (listToFillContainersHex[i] != int.parse('0xfffefefe')) {
-              //damit nicht veralteter wert in variabel gespeichert wird wenn oberstes kein icon ist
-              if (i == 0) {
-                lastRoundFirstArrowDirection = '';
-              }
-
-              //arrow not visible
-              addToListToFillContainersIcon(i, null, false);
-            } else {
-              //arrow visible todo 28.10.23 hier wird icon gesetzt
-              arrowDirection = listWithSelectedIcons[
-                  random.nextInt(listWithSelectedIcons.length)];
-
-              //damit oberstes icon nicht gleich ist wie vor change damit die anordnung sicher nicht identisch ist
-              if (i == 0) {
-                while (arrowDirection == lastRoundFirstArrowDirection) {
-                  arrowDirection = listWithSelectedIcons[
-                      random.nextInt(listWithSelectedIcons.length)];
-                }
-                lastRoundFirstArrowDirection = arrowDirection;
-              }
-
-              addToListToFillContainersIcon(i, arrowDirection, true);
-            }
-          }
-        }
-        // todo 28.10. hier letzten wert lokal festhalten-> hex & icon damit nächste runde verglichen werden kann
-      }
-    } else {
-      _timer.cancel();
-      showDialog(
-          context: context,
-          builder: (_) => alertDialogFinish(),
-          barrierDismissible: false);
-      //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
-    }
-  }
-
   /// AlertDialog das bei Ende von Übung erscheint
   Widget alertDialogFinish() {
     anzRoundsDone--;
@@ -830,13 +815,16 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
 
   /// Methode, die alle Variablen etc wieder in den anfangszustand bringt, damit page2 nochmals von null aus abgespielt werden kann
   /// timer wird absichtlich nicht verändert da nicht nötig
+  /// wird nur für Neustart aus Footer benutzt, an Ende von Training wird changeToPage2 benutzt
+  /// todo safr 12.1.25 beide neustarts über gleiche funktion laufen lassen
   void neustart() {
     _initializeSettinvariables();
     _initializeListHeight4Containers();
     _initializeListWithAllHex();
     _initializeListSelectedArrows();
     _initializeResetVariables();
-    organizeRound();
+    init_new();
+    initOptionEinmalig();
   }
 
   /// Wechsel von page2 to page1
@@ -849,6 +837,22 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             builder: (context) => MyHomePage(
                   title: 'Skillatics',
                   currentCountry: widget.currentCountry,
+                  listSelectedColors: widget.listSelectedColors,
+                  listSelectedArrowsPerColor: widget.listSelectedArrowsPerColor,
+                  listSelectedNumbers: widget.listSelectedNumbers,
+                  listSelectedShapes: widget.listSelectedShapes,
+                  listSelectedAlphabetletters:
+                      widget.listSelectedAlphabetletters,
+                  anzColorsOnPage: widget.anzColorsOnPage,
+                  secChangeColor: widget.secChangeColor,
+                  secLengthRound: widget.secLengthRound,
+                  secLengthRest: widget.secLengthRest,
+                  anzRounds: widget.anzRounds,
+                  isElemProSeiteEinmalig: widget.isElemProSeiteEinmalig,
+                  nr_individual: widget.nr_individual,
+                  nr_from: widget.nr_from,
+                  nr_to: widget.nr_to,
+                  nr_skip: widget.nr_skip,
                 )));
   }
 
@@ -859,17 +863,292 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         context,
         MaterialPageRoute(
             builder: (context) => RandomColorPage2(
-                  listSelectedColors: listWithSelectedColors,
-                  listSelectedArrows: listWithSelectedArrows,
-                  listSelectedNumbers: listWithSelectedNumbers,
-                  listSelectedShapes: listWithSelectedShapes,
-                  listSelectedAlphabetletters: listWithSelectedAlphabetletters,
-                  anzColorsOnPage: anzColorsOnPage2,
-                  secChangeColor: secChangeColor2,
-                  secLengthRound: secLengthRound2,
-                  secLengthRest: secLengthRest2,
-                  anzRounds: anzRounds2,
-                  currentCountry: widget.currentCountry,
-                )));
+                listSelectedColors: listWithSelectedColors,
+                listSelectedArrowsPerColor: listWithSelectedArrowsPerColor,
+                listSelectedNumbers: listWithSelectedNumbers,
+                listSelectedShapes: listWithSelectedShapes,
+                listSelectedAlphabetletters: listWithSelectedAlphabetletters,
+                anzColorsOnPage: anzColorsOnPage2,
+                secChangeColor: secChangeColor2,
+                secLengthRound: secLengthRound2,
+                secLengthRest: secLengthRest2,
+                anzRounds: anzRounds2,
+                currentCountry: widget.currentCountry,
+                isElemProSeiteEinmalig: isElemProSeiteEinmalig2,
+                nr_individual: widget.nr_individual,
+                nr_from: widget.nr_from,
+                nr_to: widget.nr_to,
+                nr_skip: widget.nr_skip)));
+  }
+
+  /* NEW FROM 01.12.24 SARAH FRISCHKNECHT */
+
+  void init_new() {
+    isRest = false;
+    currentSecsCD = secsLengthRoundCD;
+    currentMinsCD = minsLengthRoundCD;
+
+    restText = ''; //damit pfeil gute Position hat
+    paddingTopRestText = 0.0; //damit pfeil gute Position hat
+    fontsizeRestText = 0.0; //damit pfeil gute Position hat
+
+    listToFillContainersHex.clear();
+    listToFillContainersIcon.clear();
+
+    //damit erste Anzeige nicht gleiche Reihenfolge hat wie auf Menupage ausgewählt
+    listWithSelectedHex.shuffle();
+    listWithSelectedIcons.shuffle();
+
+    //hex-werte von menupage in list schreiben
+    for (int ll_i = 0; ll_i < listWithSelectedHex.length; ll_i++) {
+      listToFillContainersHex.add(listWithSelectedHex[ll_i]);
+    }
+
+    changeRound(true);
+  }
+
+  //wird all sekunde von timemanagement aufgerufen
+  //return 0 = no action required oder programm fertig, 1 = action required round, 2 = action required rest
+  //hier wird ua. variabel isRest umgestellt / neu gesetzt
+  int isActionRequiredItems() {
+    if (currentSecsCD == 1 && currentMinsCD == 0) {
+      //programm ganz fertig
+      if (anzRounds2 == anzRoundsDone && isRest) {
+        anzRoundsDone++;
+        return 0;
+      }
+
+      //oder wechsel von round zu rest oder von rest zu round
+      if (isRest) {
+        isRest = false;
+        anzRoundsDone++;
+        return 1;
+      } else {
+        isRest = true;
+        return 2;
+      }
+    }
+
+    switch (isRest) {
+      case false:
+        if ((secLengthRound2 - (currentMinsCD * 60 + currentSecsCD - 1)) %
+                secChangeColor2 ==
+            0) {
+          return 1;
+        }
+      case true:
+        return 0;
+    }
+    return 0; //default
+  }
+
+  //sorgt dafür dass die anzeige runde? und zeit im unteren balken korrekt ist
+  //wenn programm fertig dann in dieser funktion messagebox aufrufen
+  void timerOrganizeVariables() {
+    if (currentSecsCD > 1) {
+      currentSecsCD--;
+    } else {
+      //-> currentSecsCD =0 || =1
+      switch (currentSecsCD) {
+        case 0:
+          if (currentMinsCD > 0) {
+            currentMinsCD--;
+            currentSecsCD = 59;
+          } else {
+            //sollte eigentlich nicht vorkommen
+            //programm beenden / messagebox zeigen
+            _timer.cancel();
+            showDialog(
+                context: context,
+                builder: (_) => alertDialogFinish(),
+                barrierDismissible: false);
+            //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
+          }
+
+        case 1:
+          if (currentMinsCD == 0) {
+            currentSecsCD--;
+
+            if (anzRoundsDone > anzRounds2) {
+              //programm beenden / messagebox zeigen
+              _timer.cancel();
+              showDialog(
+                  context: context,
+                  builder: (_) => alertDialogFinish(),
+                  barrierDismissible: false);
+              //Navigator.push(context, MaterialPageRoute(builder: (context) => alertDialog()));
+            } else if (isRest) {
+              //zeit neu setzen für wechsel auf rest
+              currentMinsCD = minsLengthRestCD;
+              currentSecsCD = secsLengthRestCD;
+            } else {
+              //variabeln neu setzen für wechsel auf round
+              _initializeListHeight4Containers(); //damit nach rest wieder alle Grössen der Container stimmen
+              init_new();
+              initOptionEinmalig();
+            }
+          } else {
+            currentSecsCD--;
+          }
+      }
+    }
+  }
+
+  void changeRound(bool isInitRound) {
+    if (!isInitRound) {
+      //verhindern dass über seitenwechsel identischen kombinationen vorkommen und es aussieht als würde die app stillstehen
+      firstHexLastRound = listToFillContainersHex[0];
+      firstItemLastRound = listWithSelectedIcons.length > 1
+          ? listWithSelectedIcons[0]
+          : listWithSelectedIcons.length == 1 &&
+                  firstHexLastRound == int.parse('0xfffefefe')
+              ? listWithSelectedIcons[0]
+              : ''; //abfangen wenn nur color-items ausgewählt
+
+      //endlosloop in do-while verhindern wenn nur 1 icon/farbe ausgewählt
+      if (isElemProSeiteEinmalig2 && listToFillContainersHex.length > 1 ||
+          !isElemProSeiteEinmalig2 && listToFillContainersHex.length > 2) {
+        //verhindern dass gleiches element in erstem container ist wie in seite zuvor damit keine identischen kombinationen nacheinander vorkommen
+        do {
+          listToFillContainersHex.shuffle();
+          listWithSelectedIcons.shuffle();
+        } while (listToFillContainersHex[0] != int.parse('0xfffefefe') &&
+                listToFillContainersHex[0] == firstHexLastRound ||
+            listToFillContainersHex[0] == int.parse('0xfffefefe') &&
+                (listWithSelectedIcons.length > 0
+                        ? listWithSelectedIcons[0]
+                        : '') ==
+                    firstItemLastRound);
+      }
+    }
+
+    //verhindern dass gleiche farbe nacheinander kommt
+    int temp;
+    for (int i = 0; i < listToFillContainersHex.length - 1; i++) {
+      if (listToFillContainersHex[i] == int.parse('0xfffefefe')) {
+        //betrifft nur farb-elemente
+        continue;
+      }
+      if (listToFillContainersHex[i] == listToFillContainersHex[i + 1]) {
+        for (int j = i + 2; j < listToFillContainersHex.length; j++) {
+          if (listToFillContainersHex[i] != listToFillContainersHex[j]) {
+            temp = listToFillContainersHex[i + 1];
+            listToFillContainersHex[i + 1] = listToFillContainersHex[j];
+            listToFillContainersHex[j] = temp;
+            break;
+          }
+        }
+      }
+    }
+
+    //wegen diesem loop muss listToFillContainersHex/Icon nicht mehr von anfang an deckungsgleich sein, sondern wird hier deckungsgleich gemacht
+    //	für jeden eintrag in listToFillContainersHex der ohne icon dargestellt wird sprich nur farbe, wird icon.north in der entsprechenden farbe hinzugefügt
+    //		-> bestehendes icon in listToFillContainersIcon[x] wird nicht umgefärbt weil so nun isElemProSeiteEinmalig = true gehandelt werden kann, mit umfärben wäre einmaligkeit nicht gewährleistet
+
+    //icons werden nach jedem seitenwechsel neu gesetzt
+    var counter_icons = 0;
+    String arrowDirection;
+    Random random;
+    for (var ll_i = 0; ll_i < listToFillContainersHex.length; ll_i++) {
+      if (listToFillContainersHex[ll_i] != int.parse('0xfffefefe')) {
+        //arrow not visible
+        addToListToFillContainersIcon(ll_i, null, false);
+      } else {
+        //arrow visible
+
+        //arrowDirection holen
+        if (ll_i == 0) {
+          //für ersten container zwingend index 0 nehmen
+          arrowDirection = listWithSelectedIcons[0];
+        } else {
+          if (isElemProSeiteEinmalig2) {
+            //wenn element einmalig pro seite dann geordnete reihenfolge von listWithSelectedIcons nehmen via counter_icons
+            arrowDirection = listWithSelectedIcons[counter_icons];
+          } else {
+            //wenn nicht einmalig pro seite dann random nehmen damit auch möglich dass gleiche icons nacheinander kommen
+            random = Random();
+            arrowDirection = listWithSelectedIcons[
+                random.nextInt(listWithSelectedIcons.length)];
+          }
+        }
+
+        addToListToFillContainersIcon(ll_i, arrowDirection, true);
+
+        //counter_icons ausserhalb von if setzen weil bei ll_i==0 unklar ob counter_icons grösser werden muss oder nicht
+        counter_icons < listWithSelectedIcons.length - 1
+            ? counter_icons++
+            : counter_icons = 0;
+      }
+    }
+  }
+
+  // wird nur bei wechsel von round zu rest aufgerufen
+  void changeRest() {
+    currentSecsCD = secsLengthRestCD + 1;
+    currentMinsCD = minsLengthRestCD;
+    for (var i = 0; i < anzColorsOnPage2; i++) {
+      listToFillContainersHex[i] = 0xff000000;
+      listHeight4Container[i] = 0; //damit Rest angezeigt werden kann
+    }
+    listHeight4Container[0] =
+        bodyPercentage; //damit Rest angezeigt werden kann-> 1. container nimmt 100% ein
+    colorRestText = 0xffffffff;
+    restText = 'pause'.tr;
+    paddingTopRestText = MediaQuery.of(context).size.height / 3;
+    fontsizeRestText = 80.0;
+    for (int i = 0; i < listToFillContainersHex.length; i++) {
+      //damit alle pfeile schwarz und somit nicht sichtbar in pause
+      listToFillContainersIcon[i] =
+          const Icon(Icons.north, color: Colors.black);
+    }
+  }
+
+  //wird jede sekunde durch timer aufgerufen
+  void timemanagement_new() {
+    switch (isActionRequiredItems()) {
+      case 1:
+        //action required, round
+        changeRound(false);
+      case 2:
+        //action required, rest
+        changeRest();
+      case 0:
+      //no action required oder programm fertig
+    }
+
+    timerOrganizeVariables();
+  }
+
+  void initOptionEinmalig() {
+    // per default ist jedes selektierte element einmal in listToFillContainersIcon bzw. jede selektierte farbe/für jedes selektierte icon ist ein hex-code
+    //		in listToFillContainersHex gespeichert. somit kann isElemProSeiteEinmalig = true gewährleistet werden
+    //		Wenn isElemProSeiteEinmalig = false ist soll weiterhin die möglichkeit bestehen dass ein element auch mehrmals pro seite vorkommen kann
+    // VORAUSSETZUNG ALLG ist: das aaray listToFillContainersHex/Icon muss mindestens eine length() von anzColorsOnPage2 haben, damit das aaray sauber ausgelesen werden kann und kein nullpointer-error entsteht
+    //			wenn isElemProSeiteEinmalig = true soll listToFillContainersIcon nur mit den effektiv ausgewählten icons übergeben werden ohne duplikate (damit shuffle durchgeführt werden darf)
+    //			wenn isElemProSeiteEinmalig = false soll listToFillContainersIcon mit mind. so vielen icons gefüllt werden wie anzColorsOnPage2 damit mehrere gleiche pro seite mölglich-> genaue ausführung siehe anschliessend mit variabel "vergroessern"
+
+    if (isElemProSeiteEinmalig2 == false) {
+      int vergroessern = 2;
+      int temp = 0;
+      temp = (anzColorsOnPage2 / listToFillContainersHex.length)
+          .ceil(); //ceil = nächst grössere ganzzahl wenn kommazahl gibt
+      if (temp > 2) {
+        vergroessern = temp +
+            1; //+1 für spezialfall wenn genau 0.5 so viele farben wie anzColorsOnPage2 ausgewählt sind kann es vorkommen dass in den letzten beiden rows die gleiche farbe angezeigt wird, weil nur noch diese 2 zur verfügung stehen
+      }
+      listToFillContainersIconDuplicate = listToFillContainersIcon;
+      listToFillContainersHexDuplicate = listToFillContainersHex;
+
+      for (int ll_count = 1; ll_count < vergroessern; ll_count++) {
+        listToFillContainersIcon = [
+          ...listToFillContainersIcon,
+          ...listToFillContainersIconDuplicate
+        ];
+        listToFillContainersHex = [
+          ...listToFillContainersHex,
+          ...listToFillContainersHexDuplicate
+        ];
+      }
+    }
   }
 }

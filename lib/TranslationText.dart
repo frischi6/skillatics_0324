@@ -2,16 +2,19 @@ import 'package:get/get.dart';
 
 class TranslationText extends Translations {
   @override
-  // TODO: implement keys
   Map<String, Map<String, String>> get keys => {
         'de_DE': {
           'fehlerColorsNull': 'Es müssen noch Elemente ausgewählt werden.',
           'fehlerColorsAnz': 'Bitte mehrere Elemente auswählen.',
+          'fehlerColorsAnzElemEinmal':
+              'Wenn die Checkbox angewählt ist, dass jedes Element pro Seite nur einmal vorkommen darf, müssen mindestens so viele Elemente selektiert sein, wie pro Mal angezeigte Elemente.',
           'fehlerDurchgangNull':
               'Ein Durchgang muss mindestens eine Sekunde dauern.',
           'fehlerWechselDurchlauf':
               'Der Farbwechsel muss kürzer sein als die Dauer eines Durchlaufs.',
           'fehlerPauseNull': 'Die Pause muss mindestens eine Sekunde dauern.',
+          'fehlerArrowsNoColor': 'Bitte mindestens eine Pfeilfarbe wählen.',
+          'fehlerNrOutOfRange': 'Es sind nur Ganzzahlen von 0 bis 50 erlaubt.',
           'Gelb': 'Gelb',
           'Orange': 'Orange',
           'Rot': 'Rot',
@@ -27,8 +30,9 @@ class TranslationText extends Translations {
           'Gold': 'Gold',
           'Weiss': 'Weiss',
           'selItems': 'Mit welchen Elementen möchtest du trainieren?',
-          'selAnzFarben': 'Anzahl Farben, die aufs Mal angezeigt werden?',
-          'selWechselSek': 'Farbwechsel nach wie vielen Sekunden?',
+          'selAnzElem': 'Anzahl Elemente, die aufs Mal angezeigt werden?',
+          'selElemEinmalig': 'Gleiches Element pro Seite nur einmal anzeigen.',
+          'selWechselSek': 'Elementwechsel nach wie vielen Sekunden?',
           'selDurchlauf': 'Dauer eines Durchlaufs?',
           'farben': 'Farben',
           'pfeile': 'Pfeile',
@@ -41,6 +45,7 @@ class TranslationText extends Translations {
           'sek': 'Sek.',
           'selPause': 'Dauer einer Pause?',
           'selAnzDurchg': 'Anzahl Durchgänge total?',
+          'reset': 'Einstellungen zurücksetzen',
           'start': 'Start',
           'bereit': 'Mach dich bereit!\n',
           'rundeSg': 'Runde',
@@ -54,14 +59,24 @@ class TranslationText extends Translations {
           'bewertenJetzt': 'BEWERTEN',
           'bewertenSpaeter': 'SPÄTER',
           'bewertenNein': 'NEIN, DANKE',
+          'einzelneZahlen': 'Einzelne Zahlen:',
+          'von': 'Von',
+          'bis': 'bis',
+          'ohne': 'Ohne:',
+          'zB': 'z.B.',
         },
         'en_US': {
           'fehlerColorsNull': 'Items still need to be selected.',
           'fehlerColorsAnz': 'Please select multiple items.',
+          'fehlerColorsAnzElemEinmal':
+              'If the checkbox is selected that each item may only appear once per page, at least as many items must be selected as the number of items displayed per time.',
           'fehlerDurchgangNull': 'One pass must last at least one second.',
           'fehlerWechselDurchlauf':
               'The color change must be shorter than the duration of one pass.',
           'fehlerPauseNull': 'The pause must last at least one second.',
+          'fehlerNrOutOfRange':
+              'Only whole numbers from 0 to 50 are permitted.',
+          'fehlerArrowsNoColor': 'Please select at least one arrow color.',
           'Gelb': 'yellow',
           'Orange': 'orange',
           'Rot': 'red',
@@ -76,10 +91,10 @@ class TranslationText extends Translations {
           'Schwarz': 'black',
           'Gold': 'gold',
           'Weiss': 'white',
-          'Schwarz': 'black',
           'selItems': 'What items do you want to train with?',
-          'selAnzFarben': 'Number of colors displayed at a time?',
-          'selWechselSek': 'Color change after how many seconds?',
+          'selAnzElem': 'Number of items displayed at a time?',
+          'selElemEinmalig': 'No duplicate items per page.',
+          'selWechselSek': 'Items change after how many seconds?',
           'selDurchlauf': 'Duration of a pass?',
           'farben': 'Colors',
           'pfeile': 'Arrows',
@@ -92,6 +107,7 @@ class TranslationText extends Translations {
           'sek': 'sec',
           'selPause': 'Duration of a break?',
           'selAnzDurchg': 'Total number of passes?',
+          'reset': 'reset settings',
           'start': 'start',
           'ungültigeAngaben': 'Your data is invalid',
           'bereit': 'get ready!\n',
@@ -106,6 +122,11 @@ class TranslationText extends Translations {
           'bewertenJetzt': 'RATE',
           'bewertenSpaeter': 'LATER',
           'bewertenNein': 'NO, THANKS',
+          'einzelneZahlen': 'Single numbers:',
+          'von': 'From',
+          'bis': 'to',
+          'ohne': 'Except:',
+          'zB': 'e.g.',
         }
       };
 }
