@@ -269,6 +269,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
 
+    selectedNumbers = selectedNumbers.toSet().toList(); //Duplikate entfernen
+
     return true;
   }
 
