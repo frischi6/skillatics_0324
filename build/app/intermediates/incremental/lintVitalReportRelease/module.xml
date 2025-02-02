@@ -1,0 +1,18 @@
+<lint-module
+    format="1"
+    dir="C:\Users\sarah\FlutterProject\skillatics_grossanpassung_ende_vierundzwanzig\skillatics_0324\android\app"
+    name=":app"
+    type="APP"
+    maven="android:app:"
+    gradle="7.3.0"
+    buildFolder="C:\Users\sarah\FlutterProject\skillatics_grossanpassung_ende_vierundzwanzig\skillatics_0324\build\app"
+    bootClassPath="C:\Users\sarah\AppData\Local\Android\sdk\platforms\android-34\android.jar;C:\Users\sarah\AppData\Local\Android\sdk\build-tools\30.0.3\core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-34">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>
