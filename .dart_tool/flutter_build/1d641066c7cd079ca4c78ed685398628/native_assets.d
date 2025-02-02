@@ -1,1 +1,0 @@
- C:\\Users\\sarah\\Downloads\\skillatics_0324-main\\skillatics_0324-main\\.dart_tool\\flutter_build\\1d641066c7cd079ca4c78ed685398628\\native_assets.yaml: 

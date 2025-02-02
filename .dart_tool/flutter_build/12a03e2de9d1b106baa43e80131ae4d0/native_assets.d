@@ -1,1 +1,0 @@
- C:\\Users\\sarah\\OneDrive\\Desktop\\braintool_Kopie\\braintool_safr\\.dart_tool\\flutter_build\\12a03e2de9d1b106baa43e80131ae4d0\\native_assets.yaml: 
