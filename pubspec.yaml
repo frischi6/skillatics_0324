@@ -30,7 +30,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
   numberpicker: ^2.1.1
-  flutter_multi_select_items: ^0.4.0
+  flutter_multi_select_items: ^0.4.3
   get:
   flutter_native_splash: ^1.2.3
   font_awesome_flutter: ^10.7.0
