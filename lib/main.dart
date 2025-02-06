@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             onSecondary: Colors.black,
             background: Colors.white,
             onBackground: Colors.black,
-            surface: Colors.white, //colorCustom,
+            surface: Colors.white, // colorCustom,
             onSurface: Colors.black,
             error: Colors.red,
             onError: Colors.black,

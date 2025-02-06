@@ -932,6 +932,7 @@ class _MyHomePageState extends State<MyHomePage> {
             widget.title,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
+          centerTitle: true,
           backgroundColor: Color.fromRGBO(188, 250, 0, 1),
           actions: [
             ElevatedButton(
@@ -957,7 +958,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ],
-          centerTitle: true,
           automaticallyImplyLeading: false //damit kein zurück-Pfeil oben links
           ),
       body: SingleChildScrollView(
