@@ -932,8 +932,12 @@ class _MyHomePageState extends State<MyHomePage> {
             widget.title,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
+          backgroundColor: Color.fromRGBO(188, 250, 0, 1),
           actions: [
             ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Color.fromRGBO(188, 250, 0, 1))),
               onPressed: () {
                 if (isGerman) {
                   Get.updateLocale(Locale('en', 'US'));
