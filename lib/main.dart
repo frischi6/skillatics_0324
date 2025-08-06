@@ -64,6 +64,9 @@ class MyApp extends StatelessWidget {
         listSelectedNumbers: [],
         listSelectedShapes: [],
         listSelectedAlphabetletters: [],
+        listSelectedBackgroundcolors: [
+          4294967295
+        ], //default weiss als Hintergrundfarbe selektiert
         anzColorsOnPage: anzColorsOnPage,
         secChangeColor: secChangeColor,
         secLengthRound: secLengthRound,

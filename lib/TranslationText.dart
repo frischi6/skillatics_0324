@@ -64,6 +64,7 @@ class TranslationText extends Translations {
           'bis': 'bis',
           'ohne': 'Ohne:',
           'zB': 'z.B.',
+          'background': 'Hintergrundfarbe',
         },
         'en_US': {
           'fehlerColorsNull': 'Items still need to be selected.',
@@ -127,6 +128,7 @@ class TranslationText extends Translations {
           'bis': 'to',
           'ohne': 'Except:',
           'zB': 'e.g.',
+          'background': 'Background-Color',
         }
       };
 }

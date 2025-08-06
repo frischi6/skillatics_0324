@@ -1,4 +1,5 @@
 import 'dart:async'; //damit Timer gebraucht werden kann
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ class MyHomePage extends StatefulWidget {
       required this.listSelectedNumbers,
       required this.listSelectedShapes,
       required this.listSelectedAlphabetletters,
+      required this.listSelectedBackgroundcolors,
       required this.anzColorsOnPage,
       required this.secChangeColor,
       required this.secLengthRound,
@@ -37,6 +39,7 @@ class MyHomePage extends StatefulWidget {
   var listSelectedNumbers;
   var listSelectedShapes;
   var listSelectedAlphabetletters;
+  var listSelectedBackgroundcolors;
   int anzColorsOnPage;
   int secChangeColor;
   int secLengthRound;
@@ -85,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var selectedColors = [];
   var selectedArrows = []; //arrowdirection, nicht an trainingpage übergeben
   var selectedArrowcolors =
-      []; //arrowdirection, nicht an trainingpage übergeben
+      []; //pfeile sollten nicht nur schwarz sondern auch in anderen farben angezeigt werden können, nicht an trainingpage übergeben
   var selectedArrowsPerColor =
       []; //wird an trainingspage übergeben mit ein item pro kombination pfeil & farbe im format arrowdirection_arrowcolor
 
@@ -93,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
       []; //String, wird aber nicht so initialisiert weil sonst =[] nicht mehr geht und das machts unnötig kompliziert
   var selectedShapes = [];
   var selectedAlphabetletters = [];
-  //var selectedArrowColors = []; //pfeile sollten nicht nur schwarz sondern auch in anderen farben angezeigt werden können
+  var selectedBackgroundcolors = [];
 
   //beinhaltet hex-werte von allen selected items: hex-wert der gewählten farbe oder bei zahlen/formen/etc immer hex-wert fefefe-> so wird in trainingpage erkannt dass ein icon angezeigt werden muss
   var selectedItems = [];
@@ -134,6 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //Wechsel auf Seite 2 mit den angezeigten Farben
   void _changeToPage2() {
     organizeElementsColors();
+    organizeBackgroundcolor();
 
     //überprüft, ob Werte gültig sind
     if (isNrOutOfRange) {
@@ -186,6 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
               listSelectedNumbers: selectedNumbers,
               listSelectedShapes: selectedShapes,
               listSelectedAlphabetletters: selectedAlphabetletters,
+              listSelectedBackgroundcolors: selectedBackgroundcolors,
               anzColorsOnPage: anzColorsOnPage,
               secChangeColor: secChangeColor,
               secLengthRound: secLengthRound,
@@ -305,6 +310,16 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedItems[i] =
             'fefefe'; //weisser hintergrund aber nicht ffffff damit später erkennbar dass dort arrows angezeigt werden müssen
       } //else ist bereits ein hexcode in selectedColors und kein arrow
+    }
+  }
+
+  ///Ordnet das Array selectedBackgroundcolors
+  void organizeBackgroundcolor() {
+    //wenn nur Weiss ausgewählt ist, soll das Array geleert werden, somit wird auf der Trainingpage
+    //  das Backgroundcolor-Array ignoriert, denn der Hintergrund von Icons ist per Default sowieso weiss (fefefe)
+    if ((selectedBackgroundcolors.length == 1) &&
+        (selectedBackgroundcolors[0] == int.parse('0xffffffff'))) {
+      selectedBackgroundcolors = [];
     }
   }
 
@@ -874,6 +889,136 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  /// returnt ein MultiSelectContainer, in dem Hintergrundfarben für die Icons ausgewählt werden können
+  MultiSelectContainer buildBackgroundColorselect() {
+    return MultiSelectContainer(
+      key: Key(
+          keyString), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
+      //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
+      prefix: MultiSelectPrefix(
+          selectedPrefix: const Padding(
+        padding: EdgeInsets.only(right: 5),
+        child: Icon(
+          Icons.check,
+          color: Color.fromRGBO(
+              233, 233, 233, 1), //lightgrey damit unterscheidbar bei weiss
+          size: 14,
+        ),
+      )),
+      items: [
+        MultiSelectCard(
+          value:
+              4294967295, //hex ffffff mit opacity 100%, weiss, berechnung: int.parse('0xffffffff')
+          label: '',
+          selected: selectedBackgroundcolors.contains(4294967295),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(233, 233, 233, 1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.6),
+                ),
+              ),
+              selectedDecoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.6),
+                ),
+              )),
+          textStyles: const MultiSelectItemTextStyles(
+            selectedTextStyle: TextStyle(color: Colors.black),
+          ),
+        ),
+        MultiSelectCard(
+          value:
+              4283716692, //hex 545454, schwarz/grau damit kontrast erkennbar, berechnung: int.parse('0xff545454')
+          label: '',
+          selected: selectedBackgroundcolors.contains(4283716692),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10))),
+          textStyles: const MultiSelectItemTextStyles(
+            selectedTextStyle: TextStyle(color: Colors.white),
+          ),
+        ),
+        MultiSelectCard(
+          value:
+              3437806648, //hex e8c438 mit opacity 80%-> 0xCC, gelb, berechnung: int.parse('0xCCe8c438'), https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
+          label: '',
+          selected: selectedBackgroundcolors.contains(3437806648),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.yellow.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.yellow,
+                  borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: 3439263744, //hex ff0000 mit opacity 80%, red
+          label: '',
+          selected: selectedBackgroundcolors.contains(3439263744),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: 3435157247, //hex c056ff mit opacity 80%, violett
+          label: '',
+          selected: selectedBackgroundcolors.contains(3435157247),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 102, 0, 161).withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 102, 0, 161),
+                  borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: 3422597870, //hex 00b2ee mit opacity 80%, blue
+          label: '',
+          selected: selectedBackgroundcolors.contains(3422597870),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.lightBlue.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.lightBlue,
+                  borderRadius: BorderRadius.circular(10))),
+        ),
+        MultiSelectCard(
+          value: 3422612992, //hex 00ee00 mit opacity 80%, green
+          label: '',
+          selected: selectedBackgroundcolors.contains(3422612992),
+          decorations: MultiSelectItemDecorations(
+              decoration: BoxDecoration(
+                color: Colors.lightGreen.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              selectedDecoration: BoxDecoration(
+                  color: Colors.lightGreen,
+                  borderRadius: BorderRadius.circular(10))),
+        ),
+      ],
+      onChange: (allSelectedItems, selectedItem) {
+        selectedBackgroundcolors = allSelectedItems;
+      },
+    );
+  }
+
   @override
   void initState() {
     currentCountry = widget.currentCountry;
@@ -882,6 +1027,7 @@ class _MyHomePageState extends State<MyHomePage> {
     selectedNumbers = widget.listSelectedNumbers;
     selectedShapes = widget.listSelectedShapes;
     selectedAlphabetletters = widget.listSelectedAlphabetletters;
+    selectedBackgroundcolors = widget.listSelectedBackgroundcolors;
     anzColorsOnPage = widget.anzColorsOnPage;
     secChangeColor = widget.secChangeColor;
     secLengthRound = widget.secLengthRound;
@@ -1168,6 +1314,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ConstrainedBox(
                 constraints: BoxConstraints(),
                 child: buildShapeselect(),
+              ),
+              SizedBox(height: 25),
+              Text(
+                'background'.tr + ' Icons',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+              SizedBox(height: 10),
+              ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: buildBackgroundColorselect(),
               ),
               SizedBox(height: 15),
               Divider(

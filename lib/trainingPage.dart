@@ -15,6 +15,7 @@ class RandomColorPage2 extends StatefulWidget {
       required this.listSelectedNumbers,
       required this.listSelectedShapes,
       required this.listSelectedAlphabetletters,
+      required this.listSelectedBackgroundcolors,
       required this.anzColorsOnPage,
       required this.secChangeColor,
       required this.secLengthRound,
@@ -33,6 +34,7 @@ class RandomColorPage2 extends StatefulWidget {
   var listSelectedNumbers;
   var listSelectedShapes;
   var listSelectedAlphabetletters;
+  var listSelectedBackgroundcolors;
   int anzColorsOnPage;
   int secChangeColor;
   int secLengthRound;
@@ -63,6 +65,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   var listWithSelectedIcons =
       []; //beinhaltet listWithSelectedArrows + listWithSelectedNumbers + listWithSelectedShapes + listWithSelectedAlphabetletters
   var listToFillContainersIcon = [];
+  var listWithSelectedBackgroundcolors =
+      []; //Original mit jeder Backcgroundcolor einmal drin, wie es von Menupage kommt
+  var listWithSelectedBackgroundcolorsToFill =
+      []; //Aus diesem Array wird das Widget schlussendlich abgefüllt, muss entweder mind so lang sein wie anzColorsOnPage2 oder length=0
 
   var listIconsNumbers = [];
 
@@ -144,7 +150,14 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                       0]), //noch ersetzen mit 1/"wie viele farben aufs mal anzeigen"
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: Color(listToFillContainersHex[0]),
+                color:
+                    //wenn Icon in Container und Backgroundcolors selektiert
+                    //dann Backgroundcolor wählen
+                    //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
+                    (listToFillContainersHex[0] == int.parse('0xfffefefe')) &&
+                            (listWithSelectedBackgroundcolorsToFill.length >= 1)
+                        ? Color(listWithSelectedBackgroundcolorsToFill[0])
+                        : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
               child: restText == ''
@@ -168,9 +181,18 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   (listHeight4Container[1]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
+                  //wenn Icon in Container und Backgroundcolors selektiert
+                  //dann Backgroundcolor wählen
+                  //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
                   color: listToFillContainersHex.length > 1
-                      ? Color(listToFillContainersHex[1])
-                      : Color(listToFillContainersHex[0]),
+                      ? (listToFillContainersHex[1] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  1)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[1])
+                          : Color(listToFillContainersHex[1])
+                      : Color(listToFillContainersHex[0]) //fallback
+                  ,
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
@@ -182,9 +204,18 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   (listHeight4Container[2]),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
+                  //wenn Icon in Container und Backgroundcolors selektiert
+                  //dann Backgroundcolor wählen
+                  //sonst wenn kein Icon-> normale Farbe nehmen, wenn keine Backgroundcolor selektiert-> fefefe als Hintergrund nehmen
                   color: listToFillContainersHex.length > 2
-                      ? Color(listToFillContainersHex[2])
-                      : Color(listToFillContainersHex[0]),
+                      ? (listToFillContainersHex[2] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  2)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[2])
+                          : Color(listToFillContainersHex[2])
+                      : Color(listToFillContainersHex[0]) //fallback
+                  ,
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
             ),
@@ -197,7 +228,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: listToFillContainersHex.length > 3
-                      ? Color(listToFillContainersHex[3])
+                      ? (listToFillContainersHex[3] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  3)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[3])
+                          : Color(listToFillContainersHex[3])
                       : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
@@ -211,7 +247,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: listToFillContainersHex.length > 4
-                      ? Color(listToFillContainersHex[4])
+                      ? (listToFillContainersHex[4] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  4)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[4])
+                          : Color(listToFillContainersHex[4])
                       : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
@@ -225,7 +266,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: listToFillContainersHex.length > 5
-                      ? Color(listToFillContainersHex[5])
+                      ? (listToFillContainersHex[5] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  5)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[5])
+                          : Color(listToFillContainersHex[5])
                       : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
@@ -239,7 +285,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: listToFillContainersHex.length > 6
-                      ? Color(listToFillContainersHex[6])
+                      ? (listToFillContainersHex[6] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  6)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[6])
+                          : Color(listToFillContainersHex[6])
                       : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
@@ -253,7 +304,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: listToFillContainersHex.length > 7
-                      ? Color(listToFillContainersHex[7])
+                      ? (listToFillContainersHex[7] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  7)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[7])
+                          : Color(listToFillContainersHex[7])
                       : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
@@ -267,7 +323,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: listToFillContainersHex.length > 8
-                      ? Color(listToFillContainersHex[8])
+                      ? (listToFillContainersHex[8] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  8)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[8])
+                          : Color(listToFillContainersHex[8])
                       : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
@@ -281,7 +342,12 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: listToFillContainersHex.length > 9
-                      ? Color(listToFillContainersHex[9])
+                      ? (listToFillContainersHex[9] ==
+                                  int.parse('0xfffefefe')) &&
+                              (listWithSelectedBackgroundcolorsToFill.length >
+                                  9)
+                          ? Color(listWithSelectedBackgroundcolorsToFill[9])
+                          : Color(listToFillContainersHex[9])
                       : Color(listToFillContainersHex[0]),
                   border:
                       const Border(bottom: BorderSide(color: Colors.black))),
@@ -295,7 +361,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: listToFillContainersHex.length > 10
-                    ? Color(listToFillContainersHex[10])
+                    ? (listToFillContainersHex[10] ==
+                                int.parse('0xfffefefe')) &&
+                            (listWithSelectedBackgroundcolorsToFill.length > 10)
+                        ? Color(listWithSelectedBackgroundcolorsToFill[10])
+                        : Color(listToFillContainersHex[10])
                     : Color(listToFillContainersHex[0]),
                 border: const Border(bottom: BorderSide(color: Colors.black)),
               ),
@@ -305,7 +375,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   ? listToFillContainersIcon[11]
                   : listToFillContainersIcon[0],
               color: listToFillContainersHex.length > 11
-                  ? Color(listToFillContainersHex[11])
+                  ? (listToFillContainersHex[11] == int.parse('0xfffefefe')) &&
+                          (listWithSelectedBackgroundcolorsToFill.length > 11)
+                      ? Color(listWithSelectedBackgroundcolorsToFill[11])
+                      : Color(listToFillContainersHex[11])
                   : Color(listToFillContainersHex[0]),
               height: MediaQuery.of(context).size.height *
                   (listHeight4Container[11]),
@@ -422,6 +495,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     _initializeListSelectedShapes();
     _initializeListSelectedAlphabetletters();
     _initializeListSelectedIcons();
+    _initializeListSelectedBackgroundcolors();
   }
 
   void _initializeListSelectedNumbers() {
@@ -429,7 +503,6 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     _initializeIconsNumbers();
   }
 
-  //safr new
   //Array abfüllen in dem alle Zahlen als Icons von 0-50 drin erfasst sind
   void _initializeIconsNumbers() {
     var sizeIcon = 60.0; //grundsätzlich alle icons grösse 60
@@ -562,6 +635,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         listWithSelectedAlphabetletters;
   }
 
+  void _initializeListSelectedBackgroundcolors() {
+    listWithSelectedBackgroundcolors = widget.listSelectedBackgroundcolors;
+  }
+
   /// füllt listWithSelectedHex mit Hexcodes aus listWithSelectedColors ab
   void _initializeListWithAllHex() {
     listWithSelectedHex.clear();
@@ -570,7 +647,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     int theHexCode = 0;
 
     for (String item in listWithSelectedColors) {
-      hexxcode = '0xff' + item;
+      hexxcode = '0xff' +
+          item; //safr background: hier wird die hintergrundfarbe gesetzt
       theHexCode = (int.parse(hexxcode));
       listWithSelectedHex.add(theHexCode);
     }
@@ -843,6 +921,8 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                   listSelectedShapes: widget.listSelectedShapes,
                   listSelectedAlphabetletters:
                       widget.listSelectedAlphabetletters,
+                  listSelectedBackgroundcolors:
+                      widget.listSelectedBackgroundcolors,
                   anzColorsOnPage: widget.anzColorsOnPage,
                   secChangeColor: widget.secChangeColor,
                   secLengthRound: widget.secLengthRound,
@@ -868,6 +948,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
                 listSelectedNumbers: listWithSelectedNumbers,
                 listSelectedShapes: listWithSelectedShapes,
                 listSelectedAlphabetletters: listWithSelectedAlphabetletters,
+                listSelectedBackgroundcolors: listWithSelectedBackgroundcolors,
                 anzColorsOnPage: anzColorsOnPage2,
                 secChangeColor: secChangeColor2,
                 secLengthRound: secLengthRound2,
@@ -1026,6 +1107,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     int temp;
     for (int i = 0; i < listToFillContainersHex.length - 1; i++) {
       if (listToFillContainersHex[i] == int.parse('0xfffefefe')) {
+        //safr background kann hier nocch auf fefefe gegangen werden?
         //betrifft nur farb-elemente
         continue;
       }
@@ -1051,6 +1133,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
     Random random;
     for (var ll_i = 0; ll_i < listToFillContainersHex.length; ll_i++) {
       if (listToFillContainersHex[ll_i] != int.parse('0xfffefefe')) {
+        //safr background kann hier nocch auf fefefe gegangen werden?
         //arrow not visible
         addToListToFillContainersIcon(ll_i, null, false);
       } else {
@@ -1080,6 +1163,11 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
             : counter_icons = 0;
       }
     }
+
+    if (listWithSelectedBackgroundcolors.length > 0) {
+      prepareBackgroundcolors();
+    }
+    //safr background todo hier backgroundcolor neu
   }
 
   // wird nur bei wechsel von round zu rest aufgerufen
@@ -1149,6 +1237,35 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
           ...listToFillContainersHexDuplicate
         ];
       }
+    }
+  }
+
+  void prepareBackgroundcolors() {
+    //listWithSelectedBackgroundcolors original
+    //listWithSelectedBackgroundcolorsToFill length = anzColorsOnPage2
+
+    listWithSelectedBackgroundcolorsToFill = listWithSelectedBackgroundcolors;
+    listWithSelectedBackgroundcolorsToFill.shuffle();
+    int lastColorBefore;
+    var tempList;
+
+    //listWithSelectedBackgroundcolorsToFill muss entweder mind so lang sein wie anzColorsOnPage2 oder sonst ganz leer
+    while (listWithSelectedBackgroundcolorsToFill.length < anzColorsOnPage2) {
+      lastColorBefore = listWithSelectedBackgroundcolorsToFill[
+          listWithSelectedBackgroundcolorsToFill.length - 1];
+      tempList = listWithSelectedBackgroundcolors;
+
+      //es soll nicht mehrmals dieselbe hintergrundfarbe nacheinander kommen
+      //  hier wird auf simple art abgefangen, dass nicht die gleiche kombination von icon und backgroundcolor 2x nacheinander kommt
+      //wird nur abgefangen wenn mehr als 1 backgroundcolor ausgewählt ist
+      do {
+        tempList.shuffle();
+      } while (tempList[0] == lastColorBefore && tempList.length > 1);
+
+      listWithSelectedBackgroundcolorsToFill = [
+        ...listWithSelectedBackgroundcolorsToFill,
+        ...tempList
+      ];
     }
   }
 }
