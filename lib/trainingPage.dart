@@ -1245,15 +1245,15 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   }
 
   void prepareBackgroundcolors() {
-    //listWithSelectedBackgroundcolors original
-    //listWithSelectedBackgroundcolorsToFill length = anzColorsOnPage2
-
-    listWithSelectedBackgroundcolorsToFill = listWithSelectedBackgroundcolors;
-    listWithSelectedBackgroundcolorsToFill.shuffle();
+    //listWithSelectedBackgroundcolors: original-Array
+    //listWithSelectedBackgroundcolorsToFill: muss entweder mind so lang sein wie anzColorsOnPage2 oder sonst ganz leer
     int lastColorBefore;
     var tempList;
 
-    //listWithSelectedBackgroundcolorsToFill muss entweder mind so lang sein wie anzColorsOnPage2 oder sonst ganz leer
+    listWithSelectedBackgroundcolorsToFill = listWithSelectedBackgroundcolors;
+    listWithSelectedBackgroundcolorsToFill.shuffle();
+
+    //listWithSelectedBackgroundcolorsToFill muss mind so lang sein wie anzColorsOnPage2
     while (listWithSelectedBackgroundcolorsToFill.length < anzColorsOnPage2) {
       lastColorBefore = listWithSelectedBackgroundcolorsToFill[
           listWithSelectedBackgroundcolorsToFill.length - 1];
@@ -1266,6 +1266,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
         tempList.shuffle();
       } while (tempList[0] == lastColorBefore && tempList.length > 1);
 
+      //tempList an listWithSelectedBackgroundcolorsToFill anfügen
       listWithSelectedBackgroundcolorsToFill = [
         ...listWithSelectedBackgroundcolorsToFill,
         ...tempList

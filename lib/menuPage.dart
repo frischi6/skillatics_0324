@@ -949,9 +949,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         MultiSelectCard(
           value:
-              3437806648, //hex e8c438 mit opacity 80%-> 0xCC, gelb, berechnung: int.parse('0xCCe8c438'), https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
+              4294311680, //hex f5ff00 mit opacity 100%-> 0xFF, gelb, berechnung: int.parse('0xFFf5ff00')
           label: '',
-          selected: selectedBackgroundcolors.contains(3437806648),
+          selected: selectedBackgroundcolors.contains(4294311680),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.yellow.withOpacity(0.4),
@@ -962,7 +962,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.circular(10))),
         ),
         MultiSelectCard(
-          value: 3439263744, //hex ff0000 mit opacity 80%, red
+          value:
+              3439263744, //hex ff0000 mit opacity 80%-> 0xCC, red, berechnung: int.parse('0xCCff0000'), https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
           label: '',
           selected: selectedBackgroundcolors.contains(3439263744),
           decorations: MultiSelectItemDecorations(
@@ -987,9 +988,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.circular(10))),
         ),
         MultiSelectCard(
-          value: 3422597870, //hex 00b2ee mit opacity 80%, blue
+          value: 2566959854, //hex 00b2ee mit opacity 60%->0x99, blue
           label: '',
-          selected: selectedBackgroundcolors.contains(3422597870),
+          selected: selectedBackgroundcolors.contains(2566959854),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.lightBlue.withOpacity(0.4),
@@ -1000,9 +1001,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.circular(10))),
         ),
         MultiSelectCard(
-          value: 3422612992, //hex 00ee00 mit opacity 80%, green
+          value: 1711336960, //hex 00ee00 mit opacity 40%->0x66, green
           label: '',
-          selected: selectedBackgroundcolors.contains(3422612992),
+          selected: selectedBackgroundcolors.contains(1711336960),
           decorations: MultiSelectItemDecorations(
               decoration: BoxDecoration(
                 color: Colors.lightGreen.withOpacity(0.4),
