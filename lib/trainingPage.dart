@@ -989,9 +989,10 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
   }
 
   //wird all sekunde von timemanagement aufgerufen
-  //return 0 = no action required oder programm fertig, 1 = action required round, 2 = action required rest
+  //return 0 = no action required oder programm fertig, 1 = action required round, 2 = action required rest, 3 = action required round but just changed rest to round
   //hier wird ua. variabel isRest umgestellt / neu gesetzt
   int isActionRequiredItems() {
+    //00:01
     if (currentSecsCD == 1 && currentMinsCD == 0) {
       //programm ganz fertig
       if (anzRounds2 == anzRoundsDone && isRest) {
@@ -1003,7 +1004,7 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       if (isRest) {
         isRest = false;
         anzRoundsDone++;
-        return 1;
+        return 3;
       } else {
         isRest = true;
         return 2;
@@ -1200,6 +1201,9 @@ class _RandomColorPage2 extends State<RandomColorPage2> {
       case 2:
         //action required, rest
         changeRest();
+      case 3:
+        //action required, round, just changed from rest to round
+        changeRound(true);
       case 0:
       //no action required oder programm fertig
     }
