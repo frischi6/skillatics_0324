@@ -105,6 +105,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final MultiSelectController<dynamic> _controllerAlphabetLetter =
       MultiSelectController(deSelectPerpetualSelectedItems: true);
 
+  final MultiSelectController<dynamic> _controllerColor =
+      MultiSelectController(deSelectPerpetualSelectedItems: true);
+
 //Pop-Up in dem User nach Bewertung/Rezession schreiben gefragt wird
   /* final RateMyApp rateMyApp = RateMyApp(
     minDays: 0,
@@ -398,6 +401,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// returnt ein MultiSelectContainer, in dem alle Farben ausgewählt werden können
   MultiSelectContainer buildColorselect() {
     return MultiSelectContainer(
+      controller: _controllerColor,
       key: Key(
           keyString), //https://jelenaaa.medium.com/how-to-force-widget-to-redraw-in-flutter-2eec703bc024
       //UniqueKey(), //damit Unterschied in Widget entdeckt wird und somit Widget rebuild wird
@@ -1124,6 +1128,45 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 'farben'.tr,
                 style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    child: Text(
+                      'selectAll'.tr,
+                    ),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: BorderSide(color: Colors.grey.shade700)),
+                    autofocus: false,
+                    onPressed: () {
+                      selectedColors = _controllerColor.selectAll();
+                    },
+                    onLongPress: () {
+                      selectedColors = _controllerColor.selectAll();
+                    },
+                  ),
+                  SizedBox(width: 5),
+                  TextButton(
+                    child: Text(
+                      'deselectAll'.tr,
+                    ),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: BorderSide(color: Colors.grey.shade700)),
+                    autofocus: false,
+                    onPressed: () {
+                      _controllerColor.deselectAll();
+                      selectedColors.clear();
+                    },
+                    onLongPress: () {
+                      _controllerColor.deselectAll();
+                      selectedColors.clear();
+                    },
+                  ),
+                ],
               ),
               SizedBox(height: 10),
               ConstrainedBox(

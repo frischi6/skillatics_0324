@@ -1,20 +1,20 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="com.braintraining.skillatics"
-4    android:versionCode="17"
-5    android:versionName="3.0.0" >
+4    android:versionCode="19"
+5    android:versionName="3.2.0" >
 6
 7    <uses-sdk
 8        android:minSdkVersion="19"
-9        android:targetSdkVersion="34" />
+9        android:targetSdkVersion="36" />
 10    <!--
 11         The INTERNET permission is required for development. Specifically,
 12         the Flutter tool needs it to communicate with the running application
 13         to allow setting breakpoints, to provide hot reload, etc.
 14    -->
 15    <uses-permission android:name="android.permission.INTERNET" />
-15-->C:\Users\sarah\FlutterProject\skillatics_grossanpassung_ende_vierundzwanzig\skillatics_0324\android\app\src\debug\AndroidManifest.xml:7:5-66
-15-->C:\Users\sarah\FlutterProject\skillatics_grossanpassung_ende_vierundzwanzig\skillatics_0324\android\app\src\debug\AndroidManifest.xml:7:22-64
+15-->C:\Users\sarah\FlutterProject\skillatics_backgroundcolor2_august25\skillatics_0324\android\app\src\debug\AndroidManifest.xml:7:5-66
+15-->C:\Users\sarah\FlutterProject\skillatics_backgroundcolor2_august25\skillatics_0324\android\app\src\debug\AndroidManifest.xml:7:22-64
 16
 17    <application
 18        android:name="android.app.Application"

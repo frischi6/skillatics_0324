@@ -93,7 +93,7 @@
     },
     {
       "name": "flutter_multi_select_items",
-      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_multi_select_items-0.4.2",
+      "rootUri": "file:///C:/Users/sarah/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_multi_select_items-0.4.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -314,7 +314,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2025-02-02T20:28:22.007074Z",
+  "generated": "2025-11-16T14:30:31.121152Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

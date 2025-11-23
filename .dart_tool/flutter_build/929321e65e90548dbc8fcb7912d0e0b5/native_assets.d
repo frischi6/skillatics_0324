@@ -1,1 +1,0 @@
- C:\\Users\\sarah\\FlutterProject\\skillatics_grossanpassung_ende_vierundzwanzig\\skillatics_0324\\.dart_tool\\flutter_build\\929321e65e90548dbc8fcb7912d0e0b5\\native_assets.yaml: 

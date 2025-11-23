@@ -1,0 +1,1 @@
+ C:\\Users\\sarah\\FlutterProject\\skillatics_backgroundcolor2_august25\\skillatics_0324\\.dart_tool\\flutter_build\\635152b97add187394cc88a988030046\\native_assets.yaml: 
