@@ -6,6 +6,7 @@ buildscript {
     }
 
     dependencies {
+        classpath 'com.android.tools.build:gradle:8.5.1' //SaFr 23.11.2025 für Anpasung 16-KB-Speicherseiten muss unterstützt sein
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
